@@ -1,7 +1,7 @@
 {
   "name": "pixelated-web",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Website for Pixelated — pixelate PNG images online",
   "author": "Jay Deaton",
   "license": "MIT",
