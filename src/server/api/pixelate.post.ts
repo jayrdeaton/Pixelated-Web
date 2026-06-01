@@ -1,9 +1,9 @@
 import { randomUUID } from 'crypto'
-import { extname } from 'path'
 import { readFile, unlink, writeFile } from 'fs/promises'
+import { extname } from 'path'
 import { join } from 'path'
-import pixelated from 'pixelated'
 import type { PaletteKey, PixelatedFormat } from 'pixelated'
+import pixelated from 'pixelated'
 
 type WebFormat = PixelatedFormat
 

@@ -31,12 +31,12 @@
           </button>
           <a href="https://www.npmjs.com/package/pixelated" target="_blank" rel="noopener" aria-label="npm" class="p-1.5 rounded-lg text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.332h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331z"/>
+              <path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.332h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331z" />
             </svg>
           </a>
           <a href="https://github.com/jayrdeaton/pixelated" target="_blank" rel="noopener" aria-label="GitHub" class="p-1.5 rounded-lg text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c.96.005 1.927.138 2.993.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+              <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c.96.005 1.927.138 2.993.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
             </svg>
           </a>
         </div>
@@ -56,14 +56,7 @@
         <!-- Drop zone -->
         <div class="mb-5">
           <label class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Image</label>
-          <div
-            class="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors"
-            :class="dragging ? 'border-violet-400 dark:border-violet-500 bg-violet-50 dark:bg-violet-950/20' : 'border-gray-200 dark:border-zinc-700 hover:border-violet-300 dark:hover:border-violet-600'"
-            @click="fileInput?.click()"
-            @dragover.prevent="dragging = true"
-            @dragleave="dragging = false"
-            @drop.prevent="handleDrop"
-          >
+          <div class="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors" :class="dragging ? 'border-violet-400 dark:border-violet-500 bg-violet-50 dark:bg-violet-950/20' : 'border-gray-200 dark:border-zinc-700 hover:border-violet-300 dark:hover:border-violet-600'" @click="fileInput?.click()" @dragover.prevent="dragging = true" @dragleave="dragging = false" @drop.prevent="handleDrop">
             <div v-if="!file" class="flex flex-col items-center gap-2 pointer-events-none">
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300 dark:text-zinc-600">
                 <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -171,28 +164,23 @@
       </div>
 
       <!-- Error -->
-      <div v-if="error" class="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-2xl p-5 mb-6 font-mono text-sm text-red-600 dark:text-red-400">
-        <span class="text-red-400 dark:text-red-600 select-none">✗ </span>{{ error }}
-      </div>
+      <div v-if="error" class="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-2xl p-5 mb-6 font-mono text-sm text-red-600 dark:text-red-400"><span class="text-red-400 dark:text-red-600 select-none">✗ </span>{{ error }}</div>
 
       <!-- Result (image) -->
       <div v-if="resultUrl" class="flex flex-col items-center gap-5 mb-6">
         <div class="w-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl p-4 shadow-sm dark:shadow-none flex justify-center">
           <img :src="resultUrl" class="max-w-full max-h-96 rounded-lg object-contain" alt="Pixelated result" />
         </div>
-        <a :href="resultUrl" :download="resultFilename" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-lg px-7 py-3 text-sm transition-colors">
-          ↓ Download {{ resultFilename }}
-        </a>
+        <a :href="resultUrl" :download="resultFilename" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-lg px-7 py-3 text-sm transition-colors"> ↓ Download {{ resultFilename }} </a>
       </div>
 
       <!-- Result (ANSI) -->
       <div v-if="ansiText" class="flex flex-col items-center gap-5 mb-6">
-        <div class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 shadow-sm overflow-x-auto">
-          <pre class="text-xs font-mono leading-tight whitespace-pre" v-html="ansiHtml" />
+        <div class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 shadow-sm overflow-x-auto flex justify-center">
+          <!-- eslint-disable-next-line vue/no-v-html -- safe: ansi-to-html output from server-processed image, not user text -->
+          <pre class="text-xs font-mono leading-tight whitespace-pre inline-block" v-html="ansiHtml" />
         </div>
-        <button class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-lg px-7 py-3 text-sm transition-colors" @click="downloadAnsi">
-          ↓ Download {{ resultFilename }}
-        </button>
+        <button class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-lg px-7 py-3 text-sm transition-colors" @click="downloadAnsi">↓ Download {{ resultFilename }}</button>
       </div>
 
       <!-- Divider -->
@@ -279,7 +267,7 @@ const resultFilename = ref('')
 const ansiText = ref<string | null>(null)
 
 const ansiUp = new AnsiUp()
-const ansiHtml = computed(() => ansiText.value ? ansiUp.ansi_to_html(ansiText.value) : '')
+const ansiHtml = computed(() => (ansiText.value ? ansiUp.ansi_to_html(ansiText.value) : ''))
 
 const palettes = ['gameboy', 'nes', 'c64', 'pico8', 'cga', 'zxspectrum', 'rainbow', 'mono', 'sepia', 'neon', 'pastel']
 
@@ -352,12 +340,12 @@ const process = async () => {
     const res = await fetch('/api/pixelate', { method: 'POST', body: form })
 
     if (!res.ok) {
-      const data = await res.json().catch(() => ({ message: 'Pixelation failed' })) as { message?: string }
+      const data = (await res.json().catch(() => ({ message: 'Pixelation failed' }))) as { message?: string }
       error.value = data.message ?? 'Pixelation failed'
       return
     }
 
-    const data = await res.json() as { data: string; filename: string; mimeType: string }
+    const data = (await res.json()) as { data: string; filename: string; mimeType: string }
 
     resultFilename.value = data.filename
 
