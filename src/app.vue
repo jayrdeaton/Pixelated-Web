@@ -29,7 +29,16 @@
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
           </button>
-          <a href="https://github.com/jayrdeaton/pixelated" target="_blank" rel="noopener" class="text-sm text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200 transition-colors">GitHub</a>
+          <a href="https://www.npmjs.com/package/pixelated" target="_blank" rel="noopener" aria-label="npm" class="p-1.5 rounded-lg text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.332h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331z"/>
+            </svg>
+          </a>
+          <a href="https://github.com/jayrdeaton/pixelated" target="_blank" rel="noopener" aria-label="GitHub" class="p-1.5 rounded-lg text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c.96.005 1.927.138 2.993.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
         </div>
       </div>
     </header>
@@ -88,6 +97,7 @@
               <option value="webp">WebP</option>
               <option value="avif">AVIF</option>
               <option value="svg">SVG</option>
+              <option value="ansi">ANSI</option>
             </select>
           </div>
 
@@ -128,10 +138,10 @@
             </select>
           </div>
 
-          <!-- Dither (only when palette selected) -->
-          <div v-if="palette" class="flex items-center pb-0.5">
-            <label class="flex items-center gap-2 cursor-pointer select-none">
-              <input v-model="dither" type="checkbox" :disabled="processing" class="w-4 h-4 accent-violet-500 disabled:opacity-50" />
+          <!-- Dither -->
+          <div class="flex items-center pb-0.5" :class="!palette ? 'opacity-40' : ''">
+            <label class="flex items-center gap-2 select-none" :class="!palette ? 'cursor-not-allowed' : 'cursor-pointer'">
+              <input v-model="dither" type="checkbox" :disabled="processing || !palette" class="w-4 h-4 accent-violet-500 disabled:opacity-50" />
               <span class="text-sm text-gray-700 dark:text-zinc-300">Dither</span>
             </label>
           </div>
@@ -144,12 +154,12 @@
             </label>
           </div>
 
-          <!-- Background (SVG only) -->
-          <div v-if="format === 'svg'">
-            <label class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Background</label>
+          <!-- Background -->
+          <div :class="format !== 'svg' ? 'opacity-40' : ''">
+            <label class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Background <span class="font-normal text-gray-400 dark:text-zinc-500">(SVG)</span></label>
             <div class="flex items-center gap-2">
-              <input v-model="background" type="color" :disabled="processing" class="w-8 h-8 rounded cursor-pointer border border-gray-200 dark:border-zinc-700 disabled:opacity-50" />
-              <button v-if="background" :disabled="processing" class="text-xs text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors" @click="background = ''">Clear</button>
+              <input v-model="background" type="color" :disabled="processing || format !== 'svg'" class="w-8 h-8 rounded border border-gray-200 dark:border-zinc-700 disabled:opacity-50" :class="format === 'svg' ? 'cursor-pointer' : 'cursor-not-allowed'" />
+              <button v-if="background && format === 'svg'" :disabled="processing" class="text-xs text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors" @click="background = ''">Clear</button>
             </div>
           </div>
         </div>
@@ -165,7 +175,7 @@
         <span class="text-red-400 dark:text-red-600 select-none">✗ </span>{{ error }}
       </div>
 
-      <!-- Result -->
+      <!-- Result (image) -->
       <div v-if="resultUrl" class="flex flex-col items-center gap-5 mb-6">
         <div class="w-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl p-4 shadow-sm dark:shadow-none flex justify-center">
           <img :src="resultUrl" class="max-w-full max-h-96 rounded-lg object-contain" alt="Pixelated result" />
@@ -173,6 +183,16 @@
         <a :href="resultUrl" :download="resultFilename" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-lg px-7 py-3 text-sm transition-colors">
           ↓ Download {{ resultFilename }}
         </a>
+      </div>
+
+      <!-- Result (ANSI) -->
+      <div v-if="ansiText" class="flex flex-col items-center gap-5 mb-6">
+        <div class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 shadow-sm overflow-x-auto">
+          <pre class="text-xs font-mono leading-tight whitespace-pre" v-html="ansiHtml" />
+        </div>
+        <button class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-lg px-7 py-3 text-sm transition-colors" @click="downloadAnsi">
+          ↓ Download {{ resultFilename }}
+        </button>
       </div>
 
       <!-- Divider -->
@@ -225,6 +245,8 @@
 </template>
 
 <script setup lang="ts">
+import { AnsiUp } from 'ansi_up'
+
 const colorMode = useColorMode()
 
 const cycleColorMode = () => {
@@ -240,7 +262,7 @@ const previewUrl = ref<string | null>(null)
 const dragging = ref(false)
 
 const pixelSize = ref(20)
-const format = ref<'png' | 'jpeg' | 'webp' | 'avif' | 'svg'>('png')
+const format = ref<'png' | 'jpeg' | 'webp' | 'avif' | 'svg' | 'ansi'>('png')
 const palette = ref('')
 const dither = ref(false)
 const greyscale = ref(false)
@@ -254,6 +276,10 @@ const processing = ref(false)
 const error = ref<string | null>(null)
 const resultUrl = ref<string | null>(null)
 const resultFilename = ref('')
+const ansiText = ref<string | null>(null)
+
+const ansiUp = new AnsiUp()
+const ansiHtml = computed(() => ansiText.value ? ansiUp.ansi_to_html(ansiText.value) : '')
 
 const palettes = ['gameboy', 'nes', 'c64', 'pico8', 'cga', 'zxspectrum', 'rainbow', 'mono', 'sepia', 'neon', 'pastel']
 
@@ -278,6 +304,7 @@ const setFile = (f: File) => {
     resultUrl.value = null
     resultFilename.value = ''
   }
+  ansiText.value = null
   if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
   file.value = f
   previewUrl.value = URL.createObjectURL(f)
@@ -303,6 +330,7 @@ const process = async () => {
     URL.revokeObjectURL(resultUrl.value)
     resultUrl.value = null
   }
+  ansiText.value = null
 
   processing.value = true
   error.value = null
@@ -331,22 +359,33 @@ const process = async () => {
 
     const data = await res.json() as { data: string; filename: string; mimeType: string }
 
-    const byteStr = atob(data.data)
-    const bytes = new Uint8Array(byteStr.length)
-    for (let i = 0; i < byteStr.length; i++) bytes[i] = byteStr.charCodeAt(i)
-    const blob = new Blob([bytes], { type: data.mimeType })
-    resultUrl.value = URL.createObjectURL(blob)
     resultFilename.value = data.filename
 
-    const a = document.createElement('a')
-    a.href = resultUrl.value
-    a.download = data.filename
-    a.click()
+    if (data.mimeType === 'text/plain') {
+      ansiText.value = atob(data.data)
+    } else {
+      const byteStr = atob(data.data)
+      const bytes = new Uint8Array(byteStr.length)
+      for (let i = 0; i < byteStr.length; i++) bytes[i] = byteStr.charCodeAt(i)
+      const blob = new Blob([bytes], { type: data.mimeType })
+      resultUrl.value = URL.createObjectURL(blob)
+    }
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Pixelation failed'
   } finally {
     processing.value = false
   }
+}
+
+const downloadAnsi = () => {
+  if (!ansiText.value) return
+  const blob = new Blob([ansiText.value], { type: 'text/plain' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = resultFilename.value
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
 onUnmounted(() => {

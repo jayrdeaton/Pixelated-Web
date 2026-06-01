@@ -5,7 +5,7 @@ import { join } from 'path'
 import pixelated from 'pixelated'
 import type { PaletteKey, PixelatedFormat } from 'pixelated'
 
-type WebFormat = Exclude<PixelatedFormat, 'ansi'>
+type WebFormat = PixelatedFormat
 
 const mimeTypes: Record<WebFormat, string> = {
   png: 'image/png',
@@ -13,7 +13,8 @@ const mimeTypes: Record<WebFormat, string> = {
   jpg: 'image/jpeg',
   webp: 'image/webp',
   avif: 'image/avif',
-  svg: 'image/svg+xml'
+  svg: 'image/svg+xml',
+  ansi: 'text/plain'
 }
 
 const outExtensions: Record<WebFormat, string> = {
@@ -22,7 +23,8 @@ const outExtensions: Record<WebFormat, string> = {
   jpg: '.jpg',
   webp: '.webp',
   avif: '.avif',
-  svg: '.svg'
+  svg: '.svg',
+  ansi: '.txt'
 }
 
 export default defineEventHandler(async (event) => {
