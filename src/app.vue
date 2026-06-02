@@ -4,7 +4,7 @@
     <header class="border-b border-gray-200 dark:border-zinc-800 px-6 py-4 flex-shrink-0">
       <div class="max-w-3xl mx-auto flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <img src="/icon.svg" alt="Pixelated" class="w-6 h-6" />
+          <img src="/favicon.svg" alt="Pixelated" class="w-6 h-6" />
           <span class="text-base font-semibold tracking-tight">Pixelated</span>
         </div>
         <div class="flex items-center gap-3">
