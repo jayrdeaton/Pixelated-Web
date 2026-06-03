@@ -35,8 +35,14 @@ export default defineEventHandler(async (event) => {
   if (!fileField?.data?.length) throw createError({ statusCode: 400, message: 'No file provided' })
 
   const get = (name: string) => form.find((f) => f.name === name)?.data?.toString('utf8')
-  const getFloat = (name: string) => { const v = get(name); return v !== undefined ? parseFloat(v) : undefined }
-  const getInt = (name: string) => { const v = get(name); return v !== undefined ? parseInt(v, 10) : undefined }
+  const getFloat = (name: string) => {
+    const v = get(name)
+    return v !== undefined ? parseFloat(v) : undefined
+  }
+  const getInt = (name: string) => {
+    const v = get(name)
+    return v !== undefined ? parseInt(v, 10) : undefined
+  }
 
   const pixelRaw = get('pixel') ?? '20'
   const pixel = pixelRaw === 'auto' ? 'auto' : parseInt(pixelRaw, 10)

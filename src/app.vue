@@ -384,9 +384,14 @@ const hasBackground = computed(() => format.value !== 'jpeg' && format.value !==
 
 const autoPixelResolved = ref<number | null>(null)
 watch([pixelAuto, previewUrl, autoPixelDensity], () => {
-  if (!pixelAuto.value || !previewUrl.value) { autoPixelResolved.value = null; return }
+  if (!pixelAuto.value || !previewUrl.value) {
+    autoPixelResolved.value = null
+    return
+  }
   const img = new Image()
-  img.onload = () => { autoPixelResolved.value = Math.max(1, Math.round(Math.min(img.naturalWidth, img.naturalHeight) / autoPixelDensity.value)) }
+  img.onload = () => {
+    autoPixelResolved.value = Math.max(1, Math.round(Math.min(img.naturalWidth, img.naturalHeight) / autoPixelDensity.value))
+  }
   img.src = previewUrl.value
 })
 
