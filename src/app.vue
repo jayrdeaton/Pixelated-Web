@@ -380,7 +380,7 @@ const ansiText = ref<string | null>(null)
 const ansiUp = new AnsiUp()
 const ansiHtml = computed(() => (ansiText.value ? ansiUp.ansi_to_html(ansiText.value) : ''))
 const isAnsi = computed(() => format.value === 'ansi')
-const hasBackground = computed(() => format.value !== 'jpeg' && format.value !== 'jpg' && format.value !== 'ansi')
+const hasBackground = computed(() => format.value !== 'jpeg' && format.value !== 'ansi')
 
 const autoPixelResolved = ref<number | null>(null)
 watch([pixelAuto, previewUrl, autoPixelDensity], () => {
