@@ -63,7 +63,7 @@
                 <circle cx="8.5" cy="8.5" r="1.5" />
                 <polyline points="21 15 16 10 5 21" />
               </svg>
-              <p class="text-sm text-gray-400 dark:text-zinc-500">Drop an image here, or <span class="text-violet-500 dark:text-violet-400">click to browse</span></p>
+              <p class="text-sm text-gray-400 dark:text-zinc-500">Drop or paste an image, or <span class="text-violet-500 dark:text-violet-400">click to browse</span></p>
             </div>
             <div v-else class="flex flex-col items-center gap-3 pointer-events-none">
               <img :src="previewUrl ?? undefined" class="max-h-40 max-w-full rounded-lg object-contain" />
@@ -78,7 +78,13 @@
           <!-- Pixel size -->
           <div>
             <label for="pixel-size" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Pixel size</label>
-            <input id="pixel-size" v-model.number="pixelSize" type="number" min="1" max="200" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            <div class="flex gap-1.5">
+              <input id="pixel-size" v-model.number="pixelSize" type="number" min="1" max="200" :disabled="processing || pixelAuto" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+              <button :disabled="processing" :class="pixelAuto ? 'bg-violet-500 text-white' : 'bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50" @click="pixelAuto = !pixelAuto">
+                Auto<span v-if="pixelAuto && autoPixelResolved" class="ml-1 opacity-70 font-normal">({{ autoPixelResolved }}px)</span>
+              </button>
+              <input v-if="pixelAuto" v-model.number="autoPixelDensity" type="number" min="1" max="200" title="Density divisor" :disabled="processing" class="w-16 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
           </div>
 
           <!-- Format -->
@@ -95,25 +101,25 @@
           </div>
 
           <!-- Shape -->
-          <div>
+          <div :class="isAnsi ? 'opacity-40' : ''">
             <p class="text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Shape</p>
             <div class="flex gap-1.5">
-              <button v-for="s in ['rect', 'circle', 'diamond']" :key="s" :disabled="processing" :class="shape === s ? 'bg-violet-500 text-white' : 'bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700'" class="px-3 py-2 rounded-lg text-sm font-medium capitalize transition-colors disabled:opacity-50" @click="shape = s as 'rect' | 'circle' | 'diamond'">
+              <button v-for="s in ['rect', 'circle', 'diamond', 'triangle', 'hexagon']" :key="s" :disabled="processing || isAnsi" :class="shape === s ? 'bg-violet-500 text-white' : 'bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700'" class="px-3 py-2 rounded-lg text-sm font-medium capitalize transition-colors disabled:opacity-50" @click="shape = s as 'rect' | 'circle' | 'diamond' | 'triangle' | 'hexagon'">
                 {{ s }}
               </button>
             </div>
           </div>
 
           <!-- Gap -->
-          <div>
+          <div :class="isAnsi ? 'opacity-40' : ''">
             <label for="gap" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Gap <span class="font-normal text-gray-400 dark:text-zinc-500">(px)</span></label>
-            <input id="gap" v-model.number="gap" type="number" min="0" max="50" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            <input id="gap" v-model.number="gap" type="number" min="0" max="50" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
           </div>
 
           <!-- Scale -->
-          <div>
+          <div :class="isAnsi ? 'opacity-40' : ''">
             <label for="scale" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Scale</label>
-            <input id="scale" v-model.number="scale" type="number" min="0.1" max="10" step="0.1" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            <input id="scale" v-model.number="scale" type="number" min="0.1" max="10" step="0.1" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
           </div>
 
           <!-- Blur -->
@@ -147,12 +153,73 @@
             </label>
           </div>
 
+          <!-- Adjustments toggle -->
+          <div class="w-full flex items-center gap-2 pt-1 border-t border-gray-100 dark:border-zinc-800">
+            <button :disabled="processing" class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200 transition-colors" @click="showAdjustments = !showAdjustments">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform" :class="showAdjustments ? 'rotate-180' : ''">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+              Adjustments
+            </button>
+            <span v-if="activeAdjustmentCount > 0" class="text-xs bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400 px-1.5 py-0.5 rounded-full font-medium">{{ activeAdjustmentCount }}</span>
+          </div>
+
+          <!-- Adjustments panel -->
+          <div v-show="showAdjustments" class="w-full flex flex-wrap gap-5 items-end">
+            <div class="flex items-center pb-0.5">
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input v-model="invert" type="checkbox" :disabled="processing" class="w-4 h-4 accent-violet-500 disabled:opacity-50" />
+                <span class="text-sm text-gray-700 dark:text-zinc-300">Invert</span>
+              </label>
+            </div>
+            <div>
+              <label for="brightness" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Brightness</label>
+              <input id="brightness" v-model.number="brightness" type="number" min="0.1" max="3" step="0.1" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
+            <div>
+              <label for="contrast" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Contrast</label>
+              <input id="contrast" v-model.number="contrast" type="number" min="0" max="3" step="0.1" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
+            <div>
+              <label for="saturation" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Saturation</label>
+              <input id="saturation" v-model.number="saturation" type="number" min="0" max="3" step="0.1" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
+            <div>
+              <label for="hue" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Hue <span class="font-normal text-gray-400 dark:text-zinc-500">(°)</span></label>
+              <input id="hue" v-model.number="hue" type="number" min="-180" max="180" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
+          </div>
+
+          <!-- Noise -->
+          <div>
+            <label for="noise" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Noise</label>
+            <input id="noise" v-model.number="noise" type="number" min="0" max="100" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+          </div>
+
+          <!-- Color count -->
+          <div>
+            <label for="color-count" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Colors</label>
+            <input id="color-count" v-model="colorCount" type="number" min="1" max="256" placeholder="All" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 placeholder-gray-400 dark:placeholder-zinc-600 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+          </div>
+
+          <!-- Scanlines -->
+          <div :class="isAnsi ? 'opacity-40' : ''">
+            <label for="scanlines" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Scanlines</label>
+            <input id="scanlines" v-model.number="scanlines" type="number" min="0" max="20" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+          </div>
+
+          <!-- Seed -->
+          <div :class="noise === 0 ? 'opacity-40' : ''">
+            <label for="seed" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Seed</label>
+            <input id="seed" v-model="seed" type="number" min="0" placeholder="Random" :disabled="processing || noise === 0" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 placeholder-gray-400 dark:placeholder-zinc-600 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+          </div>
+
           <!-- Background -->
-          <div :class="format !== 'svg' ? 'opacity-40' : ''">
-            <label class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Background <span class="font-normal text-gray-400 dark:text-zinc-500">(SVG)</span></label>
+          <div :class="!hasBackground ? 'opacity-40' : ''">
+            <label class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Background</label>
             <div class="flex items-center gap-2">
-              <input v-model="background" type="color" :disabled="processing || format !== 'svg'" class="w-8 h-8 rounded border border-gray-200 dark:border-zinc-700 disabled:opacity-50" :class="format === 'svg' ? 'cursor-pointer' : 'cursor-not-allowed'" />
-              <button v-if="background && format === 'svg'" :disabled="processing" class="text-xs text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors" @click="background = ''">Clear</button>
+              <input v-model="background" type="color" :disabled="processing || !hasBackground" class="w-8 h-8 rounded border border-gray-200 dark:border-zinc-700 disabled:opacity-50" :class="hasBackground ? 'cursor-pointer' : 'cursor-not-allowed'" />
+              <button v-if="background && hasBackground" :disabled="processing" class="text-xs text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors" @click="background = ''">Clear</button>
             </div>
           </div>
         </div>
@@ -161,6 +228,10 @@
         <button :disabled="!file || processing" class="w-full bg-violet-500 hover:bg-violet-400 disabled:bg-gray-100 dark:disabled:bg-zinc-800 disabled:text-gray-400 dark:disabled:text-zinc-600 text-white font-semibold rounded-lg py-3 text-sm transition-colors" @click="process">
           {{ processing ? 'Pixelating…' : 'Pixelate' }}
         </button>
+        <div v-if="file" class="flex justify-center gap-5 mt-3">
+          <button :disabled="processing" class="text-sm text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors disabled:opacity-50 py-1" @click="resetOptions">Reset options</button>
+          <button :disabled="processing" class="text-sm text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors disabled:opacity-50 py-1" @click="clearAll">Clear</button>
+        </div>
       </div>
 
       <!-- Error -->
@@ -183,6 +254,25 @@
         <button class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-lg px-7 py-3 text-sm transition-colors" @click="downloadAnsi">↓ Download {{ resultFilename }}</button>
       </div>
 
+      <!-- History -->
+      <div v-if="history.length > 0" class="w-full mb-6">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-medium text-gray-500 dark:text-zinc-400">Previous versions</h3>
+          <button class="text-xs text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors" @click="clearHistory">Clear</button>
+        </div>
+        <div class="flex gap-3 overflow-x-auto pb-2">
+          <div v-for="(item, i) in history" :key="i" class="flex-shrink-0 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl p-3 flex flex-col items-center gap-2 w-36 shadow-sm dark:shadow-none">
+            <div class="w-28 h-28 flex items-center justify-center overflow-hidden rounded-lg bg-gray-50 dark:bg-zinc-800">
+              <img v-if="item.url" :src="item.url" class="max-w-full max-h-full object-contain" alt="" />
+              <span v-else class="text-xs font-mono text-emerald-400">ANSI</span>
+            </div>
+            <p class="text-xs text-gray-400 dark:text-zinc-500 text-center leading-tight w-full truncate">{{ item.label }}</p>
+            <a v-if="item.url" :href="item.url" :download="item.filename" class="text-xs text-violet-500 hover:text-violet-400 transition-colors">↓ Download</a>
+            <button v-else class="text-xs text-violet-500 hover:text-violet-400 transition-colors" @click="downloadHistoryAnsi(item)">↓ Download</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Divider -->
       <div class="mt-24 pt-12 border-t border-gray-200 dark:border-zinc-800">
         <h2 class="text-2xl font-semibold mb-8 text-center">Also available as a CLI</h2>
@@ -201,16 +291,26 @@
 
         <!-- Options reference -->
         <div class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl p-5 mb-10 font-mono text-sm text-gray-700 dark:text-zinc-300 leading-7 shadow-sm dark:shadow-none">
-          <p><span class="text-violet-500 dark:text-violet-400">--pixel</span> <span class="text-gray-400 dark:text-zinc-500">n|nxn</span> Pixel block size (default: 20)</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--pixel</span> <span class="text-gray-400 dark:text-zinc-500">n|nxn|auto</span> Pixel block size (default: 20)</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--autoPixelDensity</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Divisor for auto pixel size (default: 50)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--format</span> <span class="text-gray-400 dark:text-zinc-500">png|jpeg|webp|avif|svg|ansi</span> Output format (default: png)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--palette</span> <span class="text-gray-400 dark:text-zinc-500">gameboy|nes|c64|pico8|…</span> Snap colors to a palette</p>
           <p><span class="text-violet-500 dark:text-violet-400">--dither</span> Floyd–Steinberg dithering (requires --palette)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--greyscale</span> Convert to greyscale</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--invert</span> Invert colors</p>
           <p><span class="text-violet-500 dark:text-violet-400">--blur</span> <span class="text-gray-400 dark:text-zinc-500">σ</span> Pre-pixelation blur sigma</p>
-          <p><span class="text-violet-500 dark:text-violet-400">--shape</span> <span class="text-gray-400 dark:text-zinc-500">rect|circle|diamond</span> Pixel shape (default: rect)</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--brightness</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Brightness multiplier (default: 1)</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--contrast</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Contrast multiplier (default: 1)</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--saturation</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Saturation multiplier (default: 1)</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--hue</span> <span class="text-gray-400 dark:text-zinc-500">°</span> Hue rotation in degrees (default: 0)</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--noise</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Random color noise amount</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--colorCount</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Quantize output to n colors</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--shape</span> <span class="text-gray-400 dark:text-zinc-500">rect|circle|diamond|triangle|hexagon</span> Pixel shape (default: rect)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--gap</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Gap between pixels in px (default: 0)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--scale</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Output scale multiplier (default: 1)</p>
-          <p><span class="text-violet-500 dark:text-violet-400">--background</span> <span class="text-gray-400 dark:text-zinc-500">#rrggbb</span> Background fill color (SVG)</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--scanlines</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Scanline gap height in px</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--background</span> <span class="text-gray-400 dark:text-zinc-500">#rrggbb</span> Background fill color</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--seed</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Seed for deterministic noise</p>
           <p><span class="text-violet-500 dark:text-violet-400">--output</span> <span class="text-gray-400 dark:text-zinc-500">path</span> Output file path</p>
         </div>
 
@@ -225,9 +325,9 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-gray-200 dark:border-zinc-800 py-6 text-center text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0">
-      Powered by
-      <a href="https://infinitetoken.com" target="_blank" rel="noopener" class="text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200 underline underline-offset-2 ml-1 transition-colors">Infinite Token</a>
+    <footer class="border-t border-gray-200 dark:border-zinc-800 py-6 text-center text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 space-y-1.5">
+      <p>Images are processed server-side and deleted immediately — nothing is stored.</p>
+      <p>Powered by <a href="https://infinitetoken.com" target="_blank" rel="noopener" class="text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200 underline underline-offset-2 transition-colors">Infinite Token</a></p>
     </footer>
   </div>
 </template>
@@ -250,14 +350,25 @@ const previewUrl = ref<string | null>(null)
 const dragging = ref(false)
 
 const pixelSize = ref(20)
+const pixelAuto = ref(false)
+const autoPixelDensity = ref(50)
 const format = ref<'png' | 'jpeg' | 'webp' | 'avif' | 'svg' | 'ansi'>('png')
 const palette = ref('')
 const dither = ref(false)
 const greyscale = ref(false)
+const invert = ref(false)
 const blur = ref(0)
-const shape = ref<'rect' | 'circle' | 'diamond'>('rect')
+const brightness = ref(1)
+const contrast = ref(1)
+const saturation = ref(1)
+const hue = ref(0)
+const noise = ref(0)
+const colorCount = ref('')
+const shape = ref<'rect' | 'circle' | 'diamond' | 'triangle' | 'hexagon'>('rect')
 const gap = ref(0)
 const scale = ref(1)
+const scanlines = ref(0)
+const seed = ref('')
 const background = ref('')
 
 const processing = ref(false)
@@ -268,31 +379,115 @@ const ansiText = ref<string | null>(null)
 
 const ansiUp = new AnsiUp()
 const ansiHtml = computed(() => (ansiText.value ? ansiUp.ansi_to_html(ansiText.value) : ''))
+const isAnsi = computed(() => format.value === 'ansi')
+const hasBackground = computed(() => format.value !== 'jpeg' && format.value !== 'jpg' && format.value !== 'ansi')
+
+const autoPixelResolved = ref<number | null>(null)
+watch([pixelAuto, previewUrl, autoPixelDensity], () => {
+  if (!pixelAuto.value || !previewUrl.value) { autoPixelResolved.value = null; return }
+  const img = new Image()
+  img.onload = () => { autoPixelResolved.value = Math.max(1, Math.round(Math.min(img.naturalWidth, img.naturalHeight) / autoPixelDensity.value)) }
+  img.src = previewUrl.value
+})
+
+const showAdjustments = ref(false)
+const activeAdjustmentCount = computed(() => {
+  let n = 0
+  if (invert.value) n++
+  if (brightness.value !== 1) n++
+  if (contrast.value !== 1) n++
+  if (saturation.value !== 1) n++
+  if (hue.value !== 0) n++
+  return n
+})
+
+type HistoryItem = { url: string | null; ansiText: string | null; filename: string; label: string }
+const history = ref<HistoryItem[]>([])
+const resultLabel = ref('')
+
+const clearHistory = () => {
+  for (const item of history.value) {
+    if (item.url) URL.revokeObjectURL(item.url)
+  }
+  history.value = []
+}
+
+const clearAll = () => {
+  clearHistory()
+  if (resultUrl.value) URL.revokeObjectURL(resultUrl.value)
+  resultUrl.value = null
+  ansiText.value = null
+  resultFilename.value = ''
+  resultLabel.value = ''
+  error.value = null
+  if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
+  previewUrl.value = null
+  file.value = null
+  if (fileInput.value) fileInput.value.value = ''
+}
+
+const resetOptions = () => {
+  pixelSize.value = 20
+  pixelAuto.value = false
+  autoPixelDensity.value = 50
+  showAdjustments.value = false
+  format.value = 'png'
+  palette.value = ''
+  dither.value = false
+  greyscale.value = false
+  invert.value = false
+  blur.value = 0
+  brightness.value = 1
+  contrast.value = 1
+  saturation.value = 1
+  hue.value = 0
+  noise.value = 0
+  colorCount.value = ''
+  shape.value = 'rect'
+  gap.value = 0
+  scale.value = 1
+  scanlines.value = 0
+  seed.value = ''
+  background.value = ''
+}
+
+const downloadHistoryAnsi = (item: HistoryItem) => {
+  if (!item.ansiText) return
+  const blob = new Blob([item.ansiText], { type: 'text/plain' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = item.filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
 
 const palettes = ['gameboy', 'nes', 'c64', 'pico8', 'cga', 'zxspectrum', 'rainbow', 'mono', 'sepia', 'neon', 'pastel']
 
 const features = [
   {
-    title: 'Built-in palettes',
-    description: 'Snap colors to classic palettes — Game Boy, NES, PICO-8, C64, CGA, ZX Spectrum, and more.'
+    title: 'Shapes & effects',
+    description: 'Five pixel shapes — rect, circle, diamond, triangle, hexagon. Add gaps, scanlines, and scale to any size.'
   },
   {
-    title: 'SVG output',
-    description: 'Export as scalable SVG with circle or diamond pixel shapes, gaps, and background fills.'
+    title: 'Color tools',
+    description: 'Palettes, dithering, greyscale, invert, brightness, contrast, saturation, hue, noise, and color quantization.'
   },
   {
     title: 'CLI + library',
-    description: 'Use from the terminal or import pixelated directly in your Node.js project.'
+    description: 'Use from the terminal or import pixelated directly in your Node.js project. PNG, JPEG, WebP, AVIF, SVG, and ANSI output.'
   }
 ]
 
 const setFile = (f: File) => {
+  clearHistory()
   if (resultUrl.value) {
     URL.revokeObjectURL(resultUrl.value)
     resultUrl.value = null
     resultFilename.value = ''
   }
   ansiText.value = null
+  resultLabel.value = ''
   if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
   file.value = f
   previewUrl.value = URL.createObjectURL(f)
@@ -314,8 +509,13 @@ const handleFileChange = (e: Event) => {
 const process = async () => {
   if (!file.value || processing.value) return
 
-  if (resultUrl.value) {
-    URL.revokeObjectURL(resultUrl.value)
+  if (resultUrl.value || ansiText.value) {
+    history.value.push({
+      url: resultUrl.value,
+      ansiText: ansiText.value,
+      filename: resultFilename.value,
+      label: resultLabel.value
+    })
     resultUrl.value = null
   }
   ansiText.value = null
@@ -325,16 +525,26 @@ const process = async () => {
 
   const form = new FormData()
   form.append('file', file.value)
-  form.append('pixel', String(pixelSize.value))
+  form.append('pixel', pixelAuto.value ? 'auto' : String(pixelSize.value))
+  if (pixelAuto.value && autoPixelDensity.value !== 50) form.append('autoPixelDensity', String(autoPixelDensity.value))
   form.append('format', format.value)
   if (palette.value) form.append('palette', palette.value)
   form.append('dither', String(dither.value))
   form.append('greyscale', String(greyscale.value))
+  if (invert.value) form.append('invert', 'true')
   if (blur.value > 0) form.append('blur', String(blur.value))
+  if (brightness.value !== 1) form.append('brightness', String(brightness.value))
+  if (contrast.value !== 1) form.append('contrast', String(contrast.value))
+  if (saturation.value !== 1) form.append('saturation', String(saturation.value))
+  if (hue.value !== 0) form.append('hue', String(hue.value))
+  if (noise.value > 0) form.append('noise', String(noise.value))
+  if (colorCount.value !== '') form.append('colorCount', colorCount.value)
   form.append('shape', shape.value)
   form.append('gap', String(gap.value))
   form.append('scale', String(scale.value))
-  if (background.value) form.append('background', background.value)
+  if (scanlines.value > 0) form.append('scanlines', String(scanlines.value))
+  if (seed.value !== '') form.append('seed', seed.value)
+  if (background.value && hasBackground.value) form.append('background', background.value)
 
   try {
     const res = await fetch('/api/pixelate', { method: 'POST', body: form })
@@ -348,6 +558,7 @@ const process = async () => {
     const data = (await res.json()) as { data: string; filename: string; mimeType: string }
 
     resultFilename.value = data.filename
+    resultLabel.value = `${pixelSize.value}px · ${format.value.toUpperCase()}${palette.value ? ' · ' + palette.value : ''}`
 
     if (data.mimeType === 'text/plain') {
       ansiText.value = atob(data.data)
@@ -376,8 +587,21 @@ const downloadAnsi = () => {
   URL.revokeObjectURL(url)
 }
 
+const handlePaste = (e: ClipboardEvent) => {
+  const item = Array.from(e.clipboardData?.items ?? []).find((i) => i.type.startsWith('image/'))
+  if (!item) return
+  const f = item.getAsFile()
+  if (f) setFile(f)
+}
+
+onMounted(() => document.addEventListener('paste', handlePaste))
+
 onUnmounted(() => {
+  document.removeEventListener('paste', handlePaste)
   if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
   if (resultUrl.value) URL.revokeObjectURL(resultUrl.value)
+  for (const item of history.value) {
+    if (item.url) URL.revokeObjectURL(item.url)
+  }
 })
 </script>
