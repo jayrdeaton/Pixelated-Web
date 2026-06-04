@@ -87,12 +87,6 @@
             </div>
           </div>
 
-          <!-- Scale -->
-          <div :class="isAnsi ? 'opacity-40' : ''">
-            <label for="scale" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Scale</label>
-            <input id="scale" v-model.number="scale" type="number" min="0.1" max="10" step="0.1" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
-          </div>
-
           <!-- Format -->
           <div>
             <label for="format" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Format</label>
@@ -110,25 +104,31 @@
           <div :class="isAnsi ? 'opacity-40' : ''">
             <label for="shape" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Shape</label>
             <select id="shape" v-model="shape" :disabled="processing || isAnsi" class="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500 capitalize">
-              <option value="rect">Rect</option>
-              <option value="round-rect">Round Rect</option>
-              <option value="circle">Circle</option>
-              <option value="ring">Ring</option>
-              <option value="diamond">Diamond</option>
-              <option value="triangle">Triangle</option>
-              <option value="triangle-alt">Triangle Alt</option>
-              <option value="hexagon">Hexagon</option>
-              <option value="pentagon">Pentagon</option>
-              <option value="pentagon-alt">Pentagon Alt</option>
-              <option value="star">Star</option>
-              <option value="star-alt">Star Alt</option>
-              <option value="cross">Cross</option>
-              <option value="cross-alt">Cross Alt</option>
-              <option value="x">X</option>
-              <option value="asterisk">Asterisk</option>
-              <option value="hash">Hash</option>
-              <option value="heart">Heart</option>
-              <option value="heart-alt">Heart Alt</option>
+              <optgroup label="Basic">
+                <option value="circle">Circle</option>
+                <option value="rect">Rect</option>
+                <option value="ring">Ring</option>
+                <option value="round-rect">Round Rect</option>
+              </optgroup>
+              <optgroup label="Geometric">
+                <option value="diamond">Diamond</option>
+                <option value="hexagon">Hexagon</option>
+                <option value="pentagon">Pentagon</option>
+                <option value="pentagon-alt">Pentagon Alt</option>
+                <option value="triangle">Triangle</option>
+                <option value="triangle-alt">Triangle Alt</option>
+              </optgroup>
+              <optgroup label="Stars &amp; Symbols">
+                <option value="asterisk">Asterisk</option>
+                <option value="cross">Cross</option>
+                <option value="cross-alt">Cross Alt</option>
+                <option value="hash">Hash</option>
+                <option value="heart">Heart</option>
+                <option value="heart-alt">Heart Alt</option>
+                <option value="star">Star</option>
+                <option value="star-alt">Star Alt</option>
+                <option value="x">X</option>
+              </optgroup>
             </select>
           </div>
 
@@ -188,6 +188,10 @@
 
           <!-- Adjustments panel -->
           <div v-show="showAdjustments" class="w-full flex flex-wrap gap-5 items-end">
+            <div :class="isAnsi ? 'opacity-40' : ''">
+              <label for="scale" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Scale</label>
+              <input id="scale" v-model.number="scale" type="number" min="0.1" max="10" step="0.1" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
             <div :class="isAnsi ? 'opacity-40' : ''">
               <label for="gap" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Gap <span class="font-normal text-gray-400 dark:text-zinc-500">(px)</span></label>
               <input id="gap" v-model.number="gap" type="number" min="0" max="50" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
@@ -319,7 +323,7 @@
           <p><span class="text-violet-500 dark:text-violet-400">--hue</span> <span class="text-gray-400 dark:text-zinc-500">°</span> Hue rotation in degrees (default: 0)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--noise</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Random color noise amount</p>
           <p><span class="text-violet-500 dark:text-violet-400">--colorCount</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Quantize output to n colors</p>
-          <p><span class="text-violet-500 dark:text-violet-400">--shape</span> <span class="text-gray-400 dark:text-zinc-500">rect|round-rect|circle|ring|diamond|triangle|triangle-alt|hexagon|pentagon|pentagon-alt|star|star-alt|cross|cross-alt|x|asterisk|hash|heart|heart-alt</span> Pixel shape (default: rect)</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--shape</span> <span class="text-gray-400 dark:text-zinc-500 break-all">rect|round-rect|circle|ring|diamond|triangle|triangle-alt|hexagon|pentagon|pentagon-alt|star|star-alt|cross|cross-alt|x|asterisk|hash|heart|heart-alt</span> Pixel shape (default: rect)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--gap</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Gap between pixels in px (default: 0)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--scale</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Output scale multiplier (default: 1)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--scanlines</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Scanline gap height in px</p>
@@ -412,6 +416,7 @@ watch([pixelAuto, previewUrl, autoPixelDensity], () => {
 const showAdjustments = ref(false)
 const activeAdjustmentCount = computed(() => {
   let n = 0
+  if (scale.value !== 1) n++
   if (gap.value > 0) n++
   if (blur.value > 0) n++
   if (brightness.value !== 1) n++
@@ -488,8 +493,8 @@ const downloadHistoryAnsi = (item: HistoryItem) => {
 
 const { data: allPalettes } = useFetch<Record<string, string[]>>('/api/palettes')
 
-const retroKeys = ['gb', 'gbp', 'gbc', 'gba', 'vb', 'nes', 'snes', 'n64', 'genesis', 'gg', 'tg16', 'neogeo', 'msx', 'atari', 'c64', 'pico8', 'cga', 'ega', 'zxspectrum', 'amstrad', 'amiga', 'apple2', 'ps1', 'sms']
-const aestheticKeys = ['rainbow', 'mono', 'sepia', 'neon', 'pastel', 'amber', 'dracula', 'nord', 'solarized', 'monokai', 'sunset', 'forest', 'ocean', 'lava', 'sakura', 'vaporwave', 'terminal']
+const retroKeys = ['amiga', 'amstrad', 'apple2', 'atari', 'c64', 'cga', 'ega', 'gb', 'gba', 'gbc', 'gbp', 'gg', 'genesis', 'sms', 'msx', 'n64', 'neogeo', 'nes', 'pico8', 'ps1', 'snes', 'tg16', 'vb', 'zxspectrum']
+const aestheticKeys = ['amber', 'dracula', 'forest', 'lava', 'mono', 'monokai', 'neon', 'nord', 'ocean', 'pastel', 'rainbow', 'sakura', 'sepia', 'solarized', 'sunset', 'terminal', 'vaporwave']
 
 const retroPalettes = computed(() => retroKeys.filter((k) => allPalettes.value?.[k]))
 const aestheticPalettes = computed(() => aestheticKeys.filter((k) => allPalettes.value?.[k]))

@@ -4,6 +4,7 @@ import { extname } from 'path'
 import { join } from 'path'
 import type { PaletteKey, PixelatedFormat, PixelatedShape } from 'pixelated'
 import pixelated from 'pixelated'
+import sharp from 'sharp'
 
 type WebFormat = PixelatedFormat
 
@@ -75,7 +76,8 @@ export default defineEventHandler(async (event) => {
   const outputPath = join('/tmp', `pxl-out-${uuid}${outExt}`)
 
   try {
-    await writeFile(inputPath, fileField.data)
+    const orientedData = await sharp(fileField.data).rotate().toBuffer()
+    await writeFile(inputPath, orientedData)
 
     await pixelated({
       input: inputPath,

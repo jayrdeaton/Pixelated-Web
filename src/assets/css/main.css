@@ -23,3 +23,11 @@ body,
   min-height: 100vh;
   background-color: transparent;
 }
+
+/* Prevent iOS Safari from zooming on input focus (requires font-size >= 16px) */
+@supports (-webkit-touch-callout: none) {
+  input,
+  select {
+    font-size: 16px !important;
+  }
+}
