@@ -8,20 +8,21 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
+    "clean": "rm -rf dist",
     "dev": "nuxt dev",
     "fix": "eslint . --fix",
     "generate": "nuxt generate",
     "lint": "eslint .",
     "postinstall": "nuxt prepare",
     "preview": "nuxt preview",
-    "preversion": "npm install && npm run lint && npm test && npm run build",
-    "release": "git push --follow-tags",
+    "preversion": "npm ci && npm run validate",
     "release:major": "npm version major && git push --follow-tags",
     "release:minor": "npm version minor && git push --follow-tags",
     "release:patch": "npm version patch && git push --follow-tags",
     "test": "NODE_OPTIONS=--no-experimental-webstorage vitest run",
     "test:watch": "NODE_OPTIONS=--no-experimental-webstorage vitest",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "validate": "npm run typecheck && npm run lint && npm test && npm run build"
   },
   "dependencies": {
     "@nuxtjs/color-mode": "^4.0.0",
