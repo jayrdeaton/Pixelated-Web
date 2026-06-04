@@ -6,6 +6,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import handler from '../../server/api/pixelate.post'
 
 vi.mock('pixelated', () => ({ default: vi.fn() }))
+vi.mock('sharp', () => ({
+  default: vi.fn((input: Buffer) => ({ rotate: vi.fn().mockReturnThis(), toBuffer: vi.fn().mockResolvedValue(input) }))
+}))
 vi.mock('fs/promises', () => ({
   readFile: vi.fn(),
   writeFile: vi.fn(),
