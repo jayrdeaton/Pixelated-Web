@@ -87,6 +87,12 @@
             </div>
           </div>
 
+          <!-- Scale -->
+          <div :class="isAnsi ? 'opacity-40' : ''">
+            <label for="scale" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Scale</label>
+            <input id="scale" v-model.number="scale" type="number" min="0.1" max="10" step="0.1" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+          </div>
+
           <!-- Format -->
           <div>
             <label for="format" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Format</label>
@@ -105,45 +111,43 @@
             <label for="shape" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Shape</label>
             <select id="shape" v-model="shape" :disabled="processing || isAnsi" class="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500 capitalize">
               <option value="rect">Rect</option>
+              <option value="round-rect">Round Rect</option>
               <option value="circle">Circle</option>
+              <option value="ring">Ring</option>
               <option value="diamond">Diamond</option>
               <option value="triangle">Triangle</option>
+              <option value="triangle-alt">Triangle Alt</option>
               <option value="hexagon">Hexagon</option>
+              <option value="pentagon">Pentagon</option>
+              <option value="pentagon-alt">Pentagon Alt</option>
+              <option value="star">Star</option>
+              <option value="star-alt">Star Alt</option>
+              <option value="cross">Cross</option>
+              <option value="cross-alt">Cross Alt</option>
+              <option value="x">X</option>
+              <option value="asterisk">Asterisk</option>
+              <option value="hash">Hash</option>
+              <option value="heart">Heart</option>
+              <option value="heart-alt">Heart Alt</option>
             </select>
-          </div>
-
-          <!-- Gap -->
-          <div :class="isAnsi ? 'opacity-40' : ''">
-            <label for="gap" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Gap <span class="font-normal text-gray-400 dark:text-zinc-500">(px)</span></label>
-            <input id="gap" v-model.number="gap" type="number" min="0" max="50" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
-          </div>
-
-          <!-- Scale -->
-          <div :class="isAnsi ? 'opacity-40' : ''">
-            <label for="scale" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Scale</label>
-            <input id="scale" v-model.number="scale" type="number" min="0.1" max="10" step="0.1" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
-          </div>
-
-          <!-- Blur -->
-          <div>
-            <label for="blur" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Blur <span class="font-normal text-gray-400 dark:text-zinc-500">(σ)</span></label>
-            <input id="blur" v-model.number="blur" type="number" min="0" max="20" step="0.1" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
           </div>
 
           <!-- Palette -->
           <div>
             <label for="palette" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Palette</label>
-            <select id="palette" v-model="palette" :disabled="processing" class="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500">
-              <option value="">None</option>
-              <optgroup label="Retro">
-                <option v-for="key in retroPalettes" :key="key" :value="key">{{ paletteLabel(key) }}</option>
-              </optgroup>
-              <optgroup label="Aesthetic">
-                <option v-for="key in aestheticPalettes" :key="key" :value="key">{{ paletteLabel(key) }}</option>
-              </optgroup>
-            </select>
-            <div v-if="selectedPaletteColors.length" class="mt-2 flex flex-wrap gap-px">
-              <div v-for="color in selectedPaletteColors" :key="color" class="w-3 h-3 rounded-sm" :style="{ backgroundColor: color }" :title="color" />
+            <div class="flex items-start gap-2">
+              <select id="palette" v-model="palette" :disabled="processing" class="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500">
+                <option value="">None</option>
+                <optgroup label="Retro">
+                  <option v-for="key in retroPalettes" :key="key" :value="key">{{ paletteLabel(key) }}</option>
+                </optgroup>
+                <optgroup label="Aesthetic">
+                  <option v-for="key in aestheticPalettes" :key="key" :value="key">{{ paletteLabel(key) }}</option>
+                </optgroup>
+              </select>
+              <div v-if="selectedPaletteColors.length" class="flex flex-wrap gap-px pt-1.5 max-w-32">
+                <div v-for="color in selectedPaletteColors" :key="color" class="w-3 h-3 rounded-sm" :style="{ backgroundColor: color }" :title="color" />
+              </div>
             </div>
           </div>
 
@@ -163,6 +167,14 @@
             </label>
           </div>
 
+          <!-- Invert -->
+          <div class="flex items-center pb-0.5">
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+              <input v-model="invert" type="checkbox" :disabled="processing" class="w-4 h-4 accent-violet-500 disabled:opacity-50" />
+              <span class="text-sm text-gray-700 dark:text-zinc-300">Invert</span>
+            </label>
+          </div>
+
           <!-- Adjustments toggle -->
           <div class="w-full flex items-center gap-2 pt-1 border-t border-gray-100 dark:border-zinc-800">
             <button :disabled="processing" class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200 transition-colors" @click="showAdjustments = !showAdjustments">
@@ -176,11 +188,13 @@
 
           <!-- Adjustments panel -->
           <div v-show="showAdjustments" class="w-full flex flex-wrap gap-5 items-end">
-            <div class="flex items-center pb-0.5">
-              <label class="flex items-center gap-2 cursor-pointer select-none">
-                <input v-model="invert" type="checkbox" :disabled="processing" class="w-4 h-4 accent-violet-500 disabled:opacity-50" />
-                <span class="text-sm text-gray-700 dark:text-zinc-300">Invert</span>
-              </label>
+            <div :class="isAnsi ? 'opacity-40' : ''">
+              <label for="gap" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Gap <span class="font-normal text-gray-400 dark:text-zinc-500">(px)</span></label>
+              <input id="gap" v-model.number="gap" type="number" min="0" max="50" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
+            <div>
+              <label for="blur" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Blur</label>
+              <input id="blur" v-model.number="blur" type="number" min="0" max="20" step="0.1" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
             </div>
             <div>
               <label for="brightness" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Brightness</label>
@@ -198,38 +212,28 @@
               <label for="hue" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Hue <span class="font-normal text-gray-400 dark:text-zinc-500">(°)</span></label>
               <input id="hue" v-model.number="hue" type="number" min="-180" max="180" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
             </div>
-          </div>
-
-          <!-- Noise -->
-          <div>
-            <label for="noise" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Noise</label>
-            <input id="noise" v-model.number="noise" type="number" min="0" max="100" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
-          </div>
-
-          <!-- Color count -->
-          <div>
-            <label for="color-count" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Colors</label>
-            <input id="color-count" v-model="colorCount" type="number" min="1" max="256" placeholder="All" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 placeholder-gray-400 dark:placeholder-zinc-600 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
-          </div>
-
-          <!-- Scanlines -->
-          <div :class="isAnsi ? 'opacity-40' : ''">
-            <label for="scanlines" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Scanlines</label>
-            <input id="scanlines" v-model.number="scanlines" type="number" min="0" max="20" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
-          </div>
-
-          <!-- Seed -->
-          <div :class="noise === 0 ? 'opacity-40' : ''">
-            <label for="seed" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Seed</label>
-            <input id="seed" v-model="seed" type="number" min="0" placeholder="Random" :disabled="processing || noise === 0" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 placeholder-gray-400 dark:placeholder-zinc-600 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
-          </div>
-
-          <!-- Background -->
-          <div :class="!hasBackground ? 'opacity-40' : ''">
-            <label class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Background</label>
-            <div class="flex items-center gap-2">
-              <input v-model="background" type="color" :disabled="processing || !hasBackground" class="w-8 h-8 rounded border border-gray-200 dark:border-zinc-700 disabled:opacity-50" :class="hasBackground ? 'cursor-pointer' : 'cursor-not-allowed'" />
-              <button v-if="background && hasBackground" :disabled="processing" class="text-xs text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors" @click="background = ''">Clear</button>
+            <div>
+              <label for="noise" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Noise</label>
+              <input id="noise" v-model.number="noise" type="number" min="0" max="100" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
+            <div :class="noise === 0 ? 'opacity-40' : ''">
+              <label for="seed" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Seed</label>
+              <input id="seed" v-model="seed" type="number" min="0" placeholder="Random" :disabled="processing || noise === 0" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 placeholder-gray-400 dark:placeholder-zinc-600 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
+            <div>
+              <label for="color-count" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Colors</label>
+              <input id="color-count" v-model="colorCount" type="number" min="1" max="256" placeholder="All" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 placeholder-gray-400 dark:placeholder-zinc-600 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
+            <div :class="isAnsi ? 'opacity-40' : ''">
+              <label for="scanlines" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Scanlines</label>
+              <input id="scanlines" v-model.number="scanlines" type="number" min="0" max="20" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
+            <div :class="!hasBackground ? 'opacity-40' : ''">
+              <label class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Background</label>
+              <div class="flex items-center gap-2">
+                <input v-model="background" type="color" :disabled="processing || !hasBackground" class="w-8 h-8 rounded border border-gray-200 dark:border-zinc-700 disabled:opacity-50" :class="hasBackground ? 'cursor-pointer' : 'cursor-not-allowed'" />
+                <button v-if="background && hasBackground" :disabled="processing" class="text-xs text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors" @click="background = ''">Clear</button>
+              </div>
             </div>
           </div>
         </div>
@@ -315,7 +319,7 @@
           <p><span class="text-violet-500 dark:text-violet-400">--hue</span> <span class="text-gray-400 dark:text-zinc-500">°</span> Hue rotation in degrees (default: 0)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--noise</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Random color noise amount</p>
           <p><span class="text-violet-500 dark:text-violet-400">--colorCount</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Quantize output to n colors</p>
-          <p><span class="text-violet-500 dark:text-violet-400">--shape</span> <span class="text-gray-400 dark:text-zinc-500">rect|circle|diamond|triangle|hexagon</span> Pixel shape (default: rect)</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--shape</span> <span class="text-gray-400 dark:text-zinc-500">rect|round-rect|circle|ring|diamond|triangle|triangle-alt|hexagon|pentagon|pentagon-alt|star|star-alt|cross|cross-alt|x|asterisk|hash|heart|heart-alt</span> Pixel shape (default: rect)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--gap</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Gap between pixels in px (default: 0)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--scale</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Output scale multiplier (default: 1)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--scanlines</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Scanline gap height in px</p>
@@ -374,7 +378,7 @@ const saturation = ref(1)
 const hue = ref(0)
 const noise = ref(0)
 const colorCount = ref('')
-const shape = ref<'rect' | 'circle' | 'diamond' | 'triangle' | 'hexagon'>('rect')
+const shape = ref<'rect' | 'round-rect' | 'circle' | 'ring' | 'diamond' | 'triangle' | 'triangle-alt' | 'hexagon' | 'pentagon' | 'pentagon-alt' | 'star' | 'star-alt' | 'cross' | 'cross-alt' | 'x' | 'asterisk' | 'hash' | 'heart' | 'heart-alt'>('rect')
 const gap = ref(0)
 const scale = ref(1)
 const scanlines = ref(0)
@@ -408,11 +412,16 @@ watch([pixelAuto, previewUrl, autoPixelDensity], () => {
 const showAdjustments = ref(false)
 const activeAdjustmentCount = computed(() => {
   let n = 0
-  if (invert.value) n++
+  if (gap.value > 0) n++
+  if (blur.value > 0) n++
   if (brightness.value !== 1) n++
   if (contrast.value !== 1) n++
   if (saturation.value !== 1) n++
   if (hue.value !== 0) n++
+  if (noise.value > 0) n++
+  if (colorCount.value !== '') n++
+  if (scanlines.value > 0) n++
+  if (background.value && hasBackground.value) n++
   return n
 })
 
@@ -534,7 +543,7 @@ const paletteLabel = (key: string) => paletteLabels[key] ?? key
 const features = [
   {
     title: 'Shapes & effects',
-    description: 'Five pixel shapes — rect, circle, diamond, triangle, hexagon. Add gaps, scanlines, and scale to any size.'
+    description: 'Nineteen pixel shapes — rect, circle, star, heart, hexagon, and more. Add gaps, scanlines, and scale to any size.'
   },
   {
     title: 'Color tools',
