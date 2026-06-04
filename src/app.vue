@@ -102,12 +102,14 @@
 
           <!-- Shape -->
           <div :class="isAnsi ? 'opacity-40' : ''">
-            <p class="text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Shape</p>
-            <div class="flex gap-1.5">
-              <button v-for="s in ['rect', 'circle', 'diamond', 'triangle', 'hexagon']" :key="s" :disabled="processing || isAnsi" :class="shape === s ? 'bg-violet-500 text-white' : 'bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700'" class="px-3 py-2 rounded-lg text-sm font-medium capitalize transition-colors disabled:opacity-50" @click="shape = s as 'rect' | 'circle' | 'diamond' | 'triangle' | 'hexagon'">
-                {{ s }}
-              </button>
-            </div>
+            <label for="shape" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Shape</label>
+            <select id="shape" v-model="shape" :disabled="processing || isAnsi" class="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500 capitalize">
+              <option value="rect">Rect</option>
+              <option value="circle">Circle</option>
+              <option value="diamond">Diamond</option>
+              <option value="triangle">Triangle</option>
+              <option value="hexagon">Hexagon</option>
+            </select>
           </div>
 
           <!-- Gap -->
@@ -133,8 +135,16 @@
             <label for="palette" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Palette</label>
             <select id="palette" v-model="palette" :disabled="processing" class="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500">
               <option value="">None</option>
-              <option v-for="p in palettes" :key="p" :value="p">{{ p }}</option>
+              <optgroup label="Retro">
+                <option v-for="key in retroPalettes" :key="key" :value="key">{{ paletteLabel(key) }}</option>
+              </optgroup>
+              <optgroup label="Aesthetic">
+                <option v-for="key in aestheticPalettes" :key="key" :value="key">{{ paletteLabel(key) }}</option>
+              </optgroup>
             </select>
+            <div v-if="selectedPaletteColors.length" class="mt-2 flex flex-wrap gap-px">
+              <div v-for="color in selectedPaletteColors" :key="color" class="w-3 h-3 rounded-sm" :style="{ backgroundColor: color }" :title="color" />
+            </div>
           </div>
 
           <!-- Dither -->
@@ -294,7 +304,7 @@
           <p><span class="text-violet-500 dark:text-violet-400">--pixel</span> <span class="text-gray-400 dark:text-zinc-500">n|nxn|auto</span> Pixel block size (default: 20)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--autoPixelDensity</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Divisor for auto pixel size (default: 50)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--format</span> <span class="text-gray-400 dark:text-zinc-500">png|jpeg|webp|avif|svg|ansi</span> Output format (default: png)</p>
-          <p><span class="text-violet-500 dark:text-violet-400">--palette</span> <span class="text-gray-400 dark:text-zinc-500">gameboy|nes|c64|pico8|…</span> Snap colors to a palette</p>
+          <p><span class="text-violet-500 dark:text-violet-400">--palette</span> <span class="text-gray-400 dark:text-zinc-500">gb|nes|pico8|dracula|nord|…</span> Snap colors to a palette</p>
           <p><span class="text-violet-500 dark:text-violet-400">--dither</span> Floyd–Steinberg dithering (requires --palette)</p>
           <p><span class="text-violet-500 dark:text-violet-400">--greyscale</span> Convert to greyscale</p>
           <p><span class="text-violet-500 dark:text-violet-400">--invert</span> Invert colors</p>
@@ -467,7 +477,59 @@ const downloadHistoryAnsi = (item: HistoryItem) => {
   URL.revokeObjectURL(url)
 }
 
-const palettes = ['gameboy', 'nes', 'c64', 'pico8', 'cga', 'zxspectrum', 'rainbow', 'mono', 'sepia', 'neon', 'pastel']
+const { data: allPalettes } = useFetch<Record<string, string[]>>('/api/palettes')
+
+const retroKeys = ['gb', 'gbp', 'gbc', 'gba', 'vb', 'nes', 'snes', 'n64', 'genesis', 'gg', 'tg16', 'neogeo', 'msx', 'atari', 'c64', 'pico8', 'cga', 'ega', 'zxspectrum', 'amstrad', 'amiga', 'apple2', 'ps1', 'sms']
+const aestheticKeys = ['rainbow', 'mono', 'sepia', 'neon', 'pastel', 'amber', 'dracula', 'nord', 'solarized', 'monokai', 'sunset', 'forest', 'ocean', 'lava', 'sakura', 'vaporwave', 'terminal']
+
+const retroPalettes = computed(() => retroKeys.filter((k) => allPalettes.value?.[k]))
+const aestheticPalettes = computed(() => aestheticKeys.filter((k) => allPalettes.value?.[k]))
+const selectedPaletteColors = computed(() => (palette.value && allPalettes.value ? (allPalettes.value[palette.value] ?? []) : []))
+
+const paletteLabels: Record<string, string> = {
+  gb: 'Game Boy',
+  gbp: 'Game Boy Pocket',
+  gbc: 'Game Boy Color',
+  gba: 'Game Boy Advance',
+  vb: 'Virtual Boy',
+  nes: 'NES',
+  snes: 'SNES',
+  n64: 'N64',
+  genesis: 'Genesis',
+  gg: 'Game Gear',
+  tg16: 'TurboGrafx-16',
+  neogeo: 'Neo Geo',
+  msx: 'MSX',
+  atari: 'Atari',
+  c64: 'C64',
+  pico8: 'PICO-8',
+  cga: 'CGA',
+  ega: 'EGA',
+  zxspectrum: 'ZX Spectrum',
+  amstrad: 'Amstrad',
+  amiga: 'Amiga',
+  apple2: 'Apple II',
+  ps1: 'PS1',
+  sms: 'Master System',
+  rainbow: 'Rainbow',
+  mono: 'Mono',
+  sepia: 'Sepia',
+  neon: 'Neon',
+  pastel: 'Pastel',
+  amber: 'Amber',
+  dracula: 'Dracula',
+  nord: 'Nord',
+  solarized: 'Solarized',
+  monokai: 'Monokai',
+  sunset: 'Sunset',
+  forest: 'Forest',
+  ocean: 'Ocean',
+  lava: 'Lava',
+  sakura: 'Sakura',
+  vaporwave: 'Vaporwave',
+  terminal: 'Terminal'
+}
+const paletteLabel = (key: string) => paletteLabels[key] ?? key
 
 const features = [
   {
