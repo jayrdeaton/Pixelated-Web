@@ -188,9 +188,9 @@
 
           <!-- Adjustments panel -->
           <div v-show="showAdjustments" class="w-full flex flex-wrap gap-5 items-end">
-            <div :class="isAnsi ? 'opacity-40' : ''">
+            <div>
               <label for="scale" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Scale</label>
-              <input id="scale" v-model.number="scale" type="number" min="0.1" max="10" step="0.1" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+              <input id="scale" v-model.number="scale" type="number" min="0.1" max="10" step="0.1" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
             </div>
             <div :class="isAnsi ? 'opacity-40' : ''">
               <label for="gap" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Gap <span class="font-normal text-gray-400 dark:text-zinc-500">(px)</span></label>
@@ -269,7 +269,10 @@
           <!-- eslint-disable-next-line vue/no-v-html -- safe: ansi-to-html output from server-processed image, not user text -->
           <pre class="text-xs font-mono leading-tight whitespace-pre inline-block" v-html="ansiHtml" />
         </div>
-        <button class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-lg px-7 py-3 text-sm transition-colors" @click="downloadAnsi">↓ Download {{ activeItem.filename }}</button>
+        <div class="flex gap-3">
+          <button class="inline-flex items-center gap-2 bg-zinc-700 hover:bg-zinc-600 text-white font-semibold rounded-lg px-5 py-3 text-sm transition-colors" @click="copyAnsi">{{ ansiCopied ? '✓ Copied' : 'Copy' }}</button>
+          <button class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-lg px-7 py-3 text-sm transition-colors" @click="downloadAnsi">↓ Download {{ activeItem.filename }}</button>
+        </div>
       </div>
 
       <!-- History -->
@@ -645,6 +648,14 @@ const downloadAnsi = () => {
   a.download = activeItem.value.filename
   a.click()
   URL.revokeObjectURL(url)
+}
+
+const ansiCopied = ref(false)
+const copyAnsi = async () => {
+  if (!activeItem.value?.ansiText) return
+  await navigator.clipboard.writeText(activeItem.value.ansiText)
+  ansiCopied.value = true
+  setTimeout(() => (ansiCopied.value = false), 2000)
 }
 
 const loadHistoryItem = (item: HistoryItem) => {
