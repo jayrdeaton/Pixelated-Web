@@ -300,7 +300,7 @@
       </div>
 
       <!-- Divider -->
-      <div class="mt-24 pt-12 border-t border-gray-200 dark:border-zinc-800">
+      <div v-if="!isPwa" class="mt-24 pt-12 border-t border-gray-200 dark:border-zinc-800">
         <h2 class="text-2xl font-semibold mb-8 text-center">Also available as a CLI</h2>
 
         <!-- Install + Usage -->
@@ -398,6 +398,7 @@ const seed = ref('')
 const background = ref('')
 
 const processing = ref(false)
+const isPwa = ref(false)
 const error = ref<string | null>(null)
 
 const ansiUp = new AnsiUp()
@@ -675,6 +676,7 @@ const handlePaste = (e: ClipboardEvent) => {
 }
 
 onMounted(() => {
+  isPwa.value = window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true
   document.addEventListener('paste', handlePaste)
   const splash = document.getElementById('splash')
   if (splash) {
