@@ -1,7 +1,12 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 flex flex-col transition-colors duration-200">
+    <!-- Splash screen (iOS PWA) -->
+    <div id="splash" style="position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.25s">
+      <img src="/icon-180.png" style="width: 80px; height: 80px; border-radius: 18px" alt="" />
+    </div>
+
     <!-- Header -->
-    <header class="border-b border-gray-200 dark:border-zinc-800 px-6 py-4 flex-shrink-0">
+    <header class="border-b border-gray-200 dark:border-zinc-800 px-6 pb-4 flex-shrink-0" style="padding-top: calc(1rem + env(safe-area-inset-top))">
       <div class="max-w-3xl mx-auto flex items-center justify-between">
         <div class="flex items-center gap-2">
           <img src="/icon.svg" alt="Pixelated" class="w-6 h-6" />
@@ -669,7 +674,14 @@ const handlePaste = (e: ClipboardEvent) => {
   if (f) setFile(f)
 }
 
-onMounted(() => document.addEventListener('paste', handlePaste))
+onMounted(() => {
+  document.addEventListener('paste', handlePaste)
+  const splash = document.getElementById('splash')
+  if (splash) {
+    splash.style.opacity = '0'
+    setTimeout(() => splash.remove(), 250)
+  }
+})
 
 onUnmounted(() => {
   document.removeEventListener('paste', handlePaste)
