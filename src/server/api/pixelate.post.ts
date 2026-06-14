@@ -3,8 +3,6 @@ import { readFile, unlink, writeFile } from 'fs/promises'
 import { extname } from 'path'
 import { join } from 'path'
 import type { PaletteKey, PixelatedFormat, PixelatedShape } from 'pixelated'
-import pixelated from 'pixelated'
-import sharp from 'sharp'
 
 type WebFormat = PixelatedFormat
 
@@ -82,6 +80,15 @@ export default defineEventHandler(async (event) => {
   const outExt = outExtensions[format] ?? '.png'
   const inputPath = join('/tmp', `pxl-in-${uuid}${inputExt}`)
   const outputPath = join('/tmp', `pxl-out-${uuid}${outExt}`)
+
+  let sharp: typeof import('sharp').default
+  let pixelated: typeof import('pixelated').default
+  try {
+    sharp = (await import('sharp')).default
+    pixelated = (await import('pixelated')).default
+  } catch (e) {
+    throw createError({ statusCode: 500, message: `module load failed: ${(e as Error).message}` })
+  }
 
   try {
     const orientedData = await sharp(fileField.data).rotate().toBuffer()
