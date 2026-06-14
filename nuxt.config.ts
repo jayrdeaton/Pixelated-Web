@@ -29,7 +29,13 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
-      globPatterns: ['**/*.{js,css,html,svg,ico,woff2}']
+      globPatterns: ['**/*.{js,css,html,svg,ico,woff2}'],
+      runtimeCaching: [
+        {
+          urlPattern: /\/_nuxt\/builds\//,
+          handler: 'NetworkOnly'
+        }
+      ]
     }
   },
   app: {
@@ -54,7 +60,7 @@ export default defineNuxtConfig({
   },
   nitro: {
     externals: {
-      external: ['sharp']
+      external: ['sharp', 'pixelated']
     },
     vercel: {
       functions: {
