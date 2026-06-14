@@ -123,6 +123,9 @@ export default defineEventHandler(async (event) => {
       filename,
       mimeType: mimeTypes[format] ?? 'image/png'
     }
+  } catch (e) {
+    if (e && typeof e === 'object' && 'statusCode' in e) throw e
+    throw createError({ statusCode: 500, message: (e as Error).message ?? 'Processing failed' })
   } finally {
     await unlink(inputPath).catch(() => {})
     await unlink(outputPath).catch(() => {})

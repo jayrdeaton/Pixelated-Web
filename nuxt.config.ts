@@ -53,6 +53,9 @@ export default defineNuxtConfig({
     typeCheck: true
   },
   nitro: {
+    externals: {
+      external: ['sharp']
+    },
     vercel: {
       functions: {
         maxDuration: 60
