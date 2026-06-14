@@ -7,7 +7,7 @@
 
     <!-- Header -->
     <header class="border-b border-gray-200 dark:border-zinc-800 px-6 pb-4 flex-shrink-0" style="padding-top: calc(1rem + env(safe-area-inset-top))">
-      <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <div class="max-w-3xl lg:max-w-5xl mx-auto flex items-center justify-between">
         <div class="flex items-center gap-2">
           <img src="/icon.svg" alt="Pixelated" class="w-6 h-6" />
           <span class="text-base font-semibold tracking-tight">Pixelated</span>
@@ -49,15 +49,21 @@
     </header>
 
     <!-- Main -->
-    <main class="flex-1 max-w-3xl mx-auto w-full px-6 py-14">
+    <main class="flex-1 max-w-3xl lg:max-w-5xl mx-auto w-full px-6 py-14">
       <!-- Hero -->
       <div class="mb-10 text-center">
         <h1 class="text-4xl font-bold tracking-tight mb-3">Pixelate your images.</h1>
         <p class="text-gray-500 dark:text-zinc-400 text-lg leading-relaxed">Upload an image, choose your settings, and download your pixelated image in seconds.</p>
       </div>
 
-      <!-- Upload + Options card -->
-      <div class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl p-6 mb-6 shadow-sm dark:shadow-none">
+      <!-- Two-column layout: settings left, result right on md+ -->
+      <div class="md:grid md:grid-cols-2 md:gap-6 md:items-start mb-6">
+
+        <!-- Left: settings -->
+        <div class="mb-6 md:mb-0">
+
+        <!-- Upload + Options card -->
+        <div class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm dark:shadow-none">
         <!-- Drop zone -->
         <div class="mb-5">
           <label class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Image</label>
@@ -78,106 +84,99 @@
           <input ref="fileInput" type="file" accept=".png,.jpg,.jpeg,.webp,.avif,image/png,image/jpeg,image/webp,image/avif" class="hidden" @change="handleFileChange" />
         </div>
 
-        <!-- Options -->
-        <div class="flex flex-wrap gap-5 mb-6 items-end">
-          <!-- Pixel size -->
-          <div>
-            <label for="pixel-size" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Pixel size</label>
-            <div class="flex gap-1.5">
-              <input id="pixel-size" v-model.number="pixelSize" type="number" min="1" max="200" :disabled="processing || pixelAuto" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
-              <button :disabled="processing" :class="pixelAuto ? 'bg-violet-500 text-white' : 'bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50" @click="pixelAuto = !pixelAuto">
-                Auto<span v-if="pixelAuto && autoPixelResolved" class="ml-1 opacity-70 font-normal">({{ autoPixelResolved }}px)</span>
+        <!-- Presets -->
+        <div class="mb-5">
+          <div class="flex items-center gap-3 mb-2">
+            <label class="text-sm font-medium text-gray-500 dark:text-zinc-400">Style</label>
+            <div class="flex gap-1">
+              <button v-for="cat in presetCategories" :key="cat.key" :class="presetCategory === cat.key ? categoryStyle[cat.key].tabActive : 'text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300'" class="text-xs font-medium px-2 py-0.5 rounded transition-colors" @click="presetCategory = cat.key">
+                {{ cat.label }}
               </button>
-              <input v-if="pixelAuto" v-model.number="autoPixelDensity" type="number" min="1" max="200" title="Density divisor" :disabled="processing" class="w-16 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
             </div>
+            <button v-if="presetCategory === 'retro'" class="ml-auto text-xs font-medium text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors" @click="showAllRetro = !showAllRetro">
+              {{ showAllRetro ? '− less' : '+ more' }}
+            </button>
           </div>
-
-          <!-- Format -->
-          <div>
-            <label for="format" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Format</label>
-            <select id="format" v-model="format" :disabled="processing" class="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500 uppercase">
-              <option value="png">PNG</option>
-              <option value="jpeg">JPEG</option>
-              <option value="webp">WebP</option>
-              <option value="avif">AVIF</option>
-              <option value="svg">SVG</option>
-              <option value="ansi">ANSI</option>
-            </select>
+          <div class="flex flex-wrap gap-1.5">
+            <button v-for="preset in filteredPresets" :key="preset.label" :class="activePreset === preset.label ? (presetGradients[preset.label] ? 'text-white shadow-[3px_3px_0_rgba(0,0,0,0.35)] [text-shadow:0_1px_3px_rgba(0,0,0,0.65)]' : categoryStyle[presetCategory].active) : categoryStyle[presetCategory].inactive" :style="activePreset === preset.label && presetGradients[preset.label] ? { background: presetGradients[preset.label] } : undefined" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-[box-shadow,transform,color] duration-75" @click="applyPreset(preset)">
+              <component v-if="preset.icon" :is="preset.icon" :size="11" class="shrink-0" />{{ preset.label }}
+            </button>
           </div>
+        </div>
 
-          <!-- Shape -->
-          <div :class="isAnsi ? 'opacity-40' : ''">
-            <label for="shape" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Shape</label>
-            <select id="shape" v-model="shape" :disabled="processing || isAnsi" class="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500 capitalize">
-              <optgroup label="Basic">
-                <option value="circle">Circle</option>
-                <option value="rect">Rect</option>
-                <option value="ring">Ring</option>
-                <option value="round-rect">Round Rect</option>
-              </optgroup>
-              <optgroup label="Geometric">
-                <option value="diamond">Diamond</option>
-                <option value="hexagon">Hexagon</option>
-                <option value="pentagon">Pentagon</option>
-                <option value="pentagon-alt">Pentagon Alt</option>
-                <option value="triangle">Triangle</option>
-                <option value="triangle-alt">Triangle Alt</option>
-              </optgroup>
-              <optgroup label="Stars &amp; Symbols">
-                <option value="asterisk">Asterisk</option>
-                <option value="cross">Cross</option>
-                <option value="cross-alt">Cross Alt</option>
-                <option value="hash">Hash</option>
-                <option value="heart">Heart</option>
-                <option value="heart-alt">Heart Alt</option>
-                <option value="star">Star</option>
-                <option value="star-alt">Star Alt</option>
-                <option value="x">X</option>
-              </optgroup>
-            </select>
+        <!-- Mood -->
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Mood</label>
+          <div class="flex flex-wrap gap-1.5">
+            <button v-for="mood in moods" :key="mood.label" :class="activeMood === mood.label ? (moodActiveClass[mood.label] ?? 'bg-violet-500 text-white shadow-[3px_3px_0_rgba(0,0,0,0.25)]') : 'bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700 shadow-[2px_2px_0_rgba(0,0,0,0.12)]'" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-[box-shadow,transform,background-color,color] duration-75" @click="applyMood(mood)">
+              <component :is="mood.icon" :size="11" class="shrink-0" />{{ mood.label }}
+            </button>
           </div>
+        </div>
 
-          <!-- Palette -->
-          <div>
-            <label for="palette" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Palette</label>
-            <div class="flex items-start gap-2">
-              <select id="palette" v-model="palette" :disabled="processing" class="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500">
-                <option value="">None</option>
-                <optgroup label="Retro">
-                  <option v-for="key in retroPalettes" :key="key" :value="key">{{ paletteLabel(key) }}</option>
+        <!-- Options -->
+        <div class="flex flex-wrap gap-5 mb-6 items-start">
+          <!-- Pixel + Format -->
+          <div class="w-full">
+            <div class="flex items-center mb-1.5">
+              <span class="text-sm font-medium text-gray-500 dark:text-zinc-400">Pixel</span>
+              <span class="text-sm font-medium text-gray-500 dark:text-zinc-400 ml-auto">Output</span>
+            </div>
+            <div class="flex gap-3 items-start">
+              <div class="inline-flex items-stretch bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg overflow-hidden">
+                <button :disabled="processing" :class="pixelAuto ? 'bg-violet-500 text-white' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200'" class="px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50 shrink-0" @click="pixelAuto = !pixelAuto">
+                  Auto<span v-if="pixelAuto && autoPixelResolved" class="ml-1 opacity-70 font-normal">({{ autoPixelResolved }}px)</span>
+                </button>
+                <div class="w-px bg-gray-200 dark:bg-zinc-700 shrink-0" />
+                <template v-if="pixelAuto">
+                  <span class="flex items-center pl-3 text-sm text-gray-400 dark:text-zinc-500 select-none">÷</span>
+                  <input v-model.number="autoPixelDensity" type="number" min="1" max="200" :disabled="processing" class="w-14 bg-transparent px-2 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none" />
+                </template>
+                <input v-else id="pixel-size" v-model.number="pixelSize" type="number" min="1" max="200" :disabled="processing" class="w-16 bg-transparent px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none" />
+              </div>
+              <select id="shape" v-model="shape" :disabled="processing || isAnsi" :class="isAnsi ? 'opacity-40' : ''" class="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500 capitalize">
+                <optgroup label="Basic">
+                  <option value="circle">Circle</option>
+                  <option value="rect">Rect</option>
+                  <option value="ring">Ring</option>
+                  <option value="round-rect">Round Rect</option>
                 </optgroup>
-                <optgroup label="Aesthetic">
-                  <option v-for="key in aestheticPalettes" :key="key" :value="key">{{ paletteLabel(key) }}</option>
+                <optgroup label="Geometric">
+                  <option value="diamond">Diamond</option>
+                  <option value="hexagon">Hexagon</option>
+                  <option value="pentagon">Pentagon</option>
+                  <option value="pentagon-alt">Pentagon Alt</option>
+                  <option value="triangle">Triangle</option>
+                  <option value="triangle-alt">Triangle Alt</option>
+                </optgroup>
+                <optgroup label="Stars &amp; Symbols">
+                  <option value="asterisk">Asterisk</option>
+                  <option value="cross">Cross</option>
+                  <option value="cross-alt">Cross Alt</option>
+                  <option value="hash">Hash</option>
+                  <option value="heart">Heart</option>
+                  <option value="heart-alt">Heart Alt</option>
+                  <option value="star">Star</option>
+                  <option value="star-alt">Star Alt</option>
+                  <option value="x">X</option>
                 </optgroup>
               </select>
-              <div v-if="selectedPaletteColors.length" class="flex flex-wrap gap-px pt-1.5 max-w-32">
-                <div v-for="color in selectedPaletteColors" :key="color" class="w-3 h-3 rounded-sm" :style="{ backgroundColor: color }" :title="color" />
+              <div class="ml-auto flex gap-2 items-start">
+                <select id="format" v-model="format" :disabled="processing" class="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500 uppercase">
+                  <option value="png">PNG</option>
+                  <option value="jpeg">JPEG</option>
+                  <option value="webp">WebP</option>
+                  <option value="avif">AVIF</option>
+                  <option value="svg">SVG</option>
+                  <option value="ansi">ANSI</option>
+                </select>
+                <div class="flex items-center gap-1.5" :class="!hasBackground ? 'opacity-40' : ''">
+                  <input v-model="background" type="color" :disabled="processing || !hasBackground" class="w-8 h-8 rounded border border-gray-200 dark:border-zinc-700 disabled:opacity-50" :class="hasBackground ? 'cursor-pointer' : 'cursor-not-allowed'" />
+                  <span class="text-xs text-gray-400 dark:text-zinc-500">bg</span>
+                  <button v-if="background && hasBackground" :disabled="processing" class="text-xs text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors" @click="background = ''">✕</button>
+                </div>
               </div>
             </div>
-          </div>
-
-          <!-- Dither -->
-          <div class="flex items-center pb-0.5" :class="!palette ? 'opacity-40' : ''">
-            <label class="flex items-center gap-2 select-none" :class="!palette ? 'cursor-not-allowed' : 'cursor-pointer'">
-              <input v-model="dither" type="checkbox" :disabled="processing || !palette" class="w-4 h-4 accent-violet-500 disabled:opacity-50" />
-              <span class="text-sm text-gray-700 dark:text-zinc-300">Dither</span>
-            </label>
-          </div>
-
-          <!-- Greyscale -->
-          <div class="flex items-center pb-0.5">
-            <label class="flex items-center gap-2 cursor-pointer select-none">
-              <input v-model="greyscale" type="checkbox" :disabled="processing" class="w-4 h-4 accent-violet-500 disabled:opacity-50" />
-              <span class="text-sm text-gray-700 dark:text-zinc-300">Greyscale</span>
-            </label>
-          </div>
-
-          <!-- Invert -->
-          <div class="flex items-center pb-0.5">
-            <label class="flex items-center gap-2 cursor-pointer select-none">
-              <input v-model="invert" type="checkbox" :disabled="processing" class="w-4 h-4 accent-violet-500 disabled:opacity-50" />
-              <span class="text-sm text-gray-700 dark:text-zinc-300">Invert</span>
-            </label>
           </div>
 
           <!-- Adjustments toggle -->
@@ -193,18 +192,8 @@
 
           <!-- Adjustments panel -->
           <div v-show="showAdjustments" class="w-full flex flex-wrap gap-5 items-end">
-            <div>
-              <label for="scale" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Scale</label>
-              <input id="scale" v-model.number="scale" type="number" min="0.1" max="10" step="0.1" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
-            </div>
-            <div :class="isAnsi ? 'opacity-40' : ''">
-              <label for="gap" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Gap <span class="font-normal text-gray-400 dark:text-zinc-500">(px)</span></label>
-              <input id="gap" v-model.number="gap" type="number" min="0" max="50" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
-            </div>
-            <div>
-              <label for="blur" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Blur</label>
-              <input id="blur" v-model.number="blur" type="number" min="0" max="20" step="0.1" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
-            </div>
+            <!-- Color -->
+            <span class="basis-full text-sm font-medium text-gray-500 dark:text-zinc-400 -mb-2">Color</span>
             <div>
               <label for="brightness" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Brightness</label>
               <input id="brightness" v-model.number="brightness" type="number" min="0.1" max="3" step="0.1" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
@@ -222,6 +211,29 @@
               <input id="hue" v-model.number="hue" type="number" min="-180" max="180" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
             </div>
             <div>
+              <label for="color-count" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Max colors</label>
+              <input id="color-count" v-model="colorCount" type="number" min="1" max="256" placeholder="All" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 placeholder-gray-400 dark:placeholder-zinc-600 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
+            <div class="flex items-center pb-0.5">
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input v-model="greyscale" type="checkbox" :disabled="processing" class="w-4 h-4 accent-violet-500 disabled:opacity-50" />
+                <span class="text-sm text-gray-700 dark:text-zinc-300">Greyscale</span>
+              </label>
+            </div>
+            <div class="flex items-center pb-0.5">
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input v-model="invert" type="checkbox" :disabled="processing" class="w-4 h-4 accent-violet-500 disabled:opacity-50" />
+                <span class="text-sm text-gray-700 dark:text-zinc-300">Invert</span>
+              </label>
+            </div>
+
+            <!-- Effects -->
+            <span class="basis-full text-sm font-medium text-gray-500 dark:text-zinc-400 -mb-2">Effects</span>
+            <div>
+              <label for="blur" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Blur</label>
+              <input id="blur" v-model.number="blur" type="number" min="0" max="20" step="0.1" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
+            <div>
               <label for="noise" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Noise</label>
               <input id="noise" v-model.number="noise" type="number" min="0" max="100" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
             </div>
@@ -229,56 +241,82 @@
               <label for="seed" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Seed</label>
               <input id="seed" v-model="seed" type="number" min="0" placeholder="Random" :disabled="processing || noise === 0" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 placeholder-gray-400 dark:placeholder-zinc-600 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
             </div>
+            <div class="flex items-center pb-0.5" :class="!palette ? 'opacity-40' : ''">
+              <label class="flex items-center gap-2 select-none" :class="!palette ? 'cursor-not-allowed' : 'cursor-pointer'">
+                <input v-model="dither" type="checkbox" :disabled="processing || !palette" class="w-4 h-4 accent-violet-500 disabled:opacity-50" />
+                <span class="text-sm text-gray-700 dark:text-zinc-300">Dither</span>
+              </label>
+            </div>
+
+            <!-- Rendering -->
+            <span class="basis-full text-sm font-medium text-gray-500 dark:text-zinc-400 -mb-2">Rendering</span>
             <div>
-              <label for="color-count" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Colors</label>
-              <input id="color-count" v-model="colorCount" type="number" min="1" max="256" placeholder="All" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 placeholder-gray-400 dark:placeholder-zinc-600 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+              <label for="scale" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Scale</label>
+              <input id="scale" v-model.number="scale" type="number" min="0.1" max="10" step="0.1" :disabled="processing" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
+            </div>
+            <div :class="isAnsi ? 'opacity-40' : ''">
+              <label for="gap" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Gap <span class="font-normal text-gray-400 dark:text-zinc-500">(px)</span></label>
+              <input id="gap" v-model.number="gap" type="number" min="0" max="50" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
             </div>
             <div :class="isAnsi ? 'opacity-40' : ''">
               <label for="scanlines" class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Scanlines</label>
               <input id="scanlines" v-model.number="scanlines" type="number" min="0" max="20" :disabled="processing || isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" />
             </div>
-            <div :class="!hasBackground ? 'opacity-40' : ''">
-              <label class="block text-sm font-medium text-gray-500 dark:text-zinc-400 mb-1.5">Background</label>
-              <div class="flex items-center gap-2">
-                <input v-model="background" type="color" :disabled="processing || !hasBackground" class="w-8 h-8 rounded border border-gray-200 dark:border-zinc-700 disabled:opacity-50" :class="hasBackground ? 'cursor-pointer' : 'cursor-not-allowed'" />
-                <button v-if="background && hasBackground" :disabled="processing" class="text-xs text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors" @click="background = ''">Clear</button>
-              </div>
-            </div>
           </div>
         </div>
 
         <!-- Submit -->
-        <button :disabled="!file || processing" class="w-full bg-violet-500 hover:bg-violet-400 disabled:bg-gray-100 dark:disabled:bg-zinc-800 disabled:text-gray-400 dark:disabled:text-zinc-600 text-white font-semibold rounded-lg py-3 text-sm transition-colors" @click="process">
+        <button :disabled="!file || processing" class="w-full bg-violet-500 hover:bg-violet-400 disabled:bg-gray-100 dark:disabled:bg-zinc-800 disabled:text-gray-400 dark:disabled:text-zinc-600 text-white font-semibold rounded-lg py-3 text-sm shadow-[4px_4px_0_rgba(0,0,0,0.25)] disabled:shadow-none active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-[box-shadow,transform,background-color] duration-75" @click="process">
           {{ processing ? 'Pixelating…' : 'Pixelate' }}
         </button>
-        <div v-if="file" class="flex justify-center gap-5 mt-3">
-          <button :disabled="processing" class="text-sm text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors disabled:opacity-50 py-1" @click="resetOptions">Reset options</button>
-          <button :disabled="processing" class="text-sm text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors disabled:opacity-50 py-1" @click="clearAll">Clear</button>
+        <div class="flex justify-center gap-5 mt-3">
+          <button :disabled="processing" class="text-sm text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 transition-colors disabled:opacity-50 py-1" @click="resetOptions">Reset</button>
         </div>
       </div>
 
+        </div><!-- end left col -->
+
+        <!-- Right: result -->
+        <div ref="resultEl" class="md:sticky md:top-6 flex flex-col gap-4">
+
       <!-- Error -->
-      <div v-if="error" class="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-2xl p-5 mb-6 font-mono text-sm text-red-600 dark:text-red-400"><span class="text-red-400 dark:text-red-600 select-none">✗ </span>{{ error }}</div>
+      <div v-if="error" class="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-2xl p-5 font-mono text-sm text-red-600 dark:text-red-400"><span class="text-red-400 dark:text-red-600 select-none">✗ </span>{{ error }}</div>
 
       <!-- Result (image) -->
-      <div v-if="activeItem?.url" class="flex flex-col items-center gap-5 mb-6">
-        <div class="w-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl p-4 shadow-sm dark:shadow-none flex justify-center">
-          <img :src="activeItem.url" class="max-w-full max-h-96 rounded-lg object-contain" alt="Pixelated result" />
+      <div v-if="activeItem?.url || (processing && format !== 'ansi')" class="flex flex-col items-center gap-4">
+        <div class="relative w-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl p-4 shadow-sm dark:shadow-none flex justify-center min-h-32 items-center">
+          <img v-if="activeItem?.url" :src="activeItem.url" class="max-w-full max-h-96 rounded-lg object-contain transition-opacity" :class="processing ? 'opacity-30' : ''" alt="Pixelated result" />
+          <div v-if="processing" class="absolute inset-0 flex items-center justify-center">
+            <div class="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+          </div>
         </div>
-        <a :href="activeItem.url" :download="activeItem.filename" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-lg px-7 py-3 text-sm transition-colors"> ↓ Download {{ activeItem.filename }} </a>
+        <a v-if="activeItem?.url" :href="activeItem.url" :download="activeItem.filename" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-lg px-7 py-3 text-sm shadow-[4px_4px_0_rgba(0,0,0,0.25)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-[box-shadow,transform,background-color] duration-75"> ↓ Download {{ activeItem.filename }} </a>
       </div>
 
       <!-- Result (ANSI) -->
-      <div v-if="activeItem?.ansiText" class="flex flex-col items-center gap-5 mb-6">
-        <div class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 shadow-sm overflow-x-auto flex justify-center">
-          <!-- eslint-disable-next-line vue/no-v-html -- safe: ansi-to-html output from server-processed image, not user text -->
-          <pre class="text-xs font-mono leading-tight whitespace-pre inline-block" v-html="ansiHtml" />
+      <div v-if="activeItem?.ansiText || (processing && format === 'ansi')" class="flex flex-col items-center gap-4">
+        <div class="relative w-full">
+          <div ref="ansiContainerEl" class="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 shadow-sm overflow-auto max-h-96 min-h-32 transition-opacity" :class="processing ? 'opacity-30' : ''">
+            <!-- eslint-disable-next-line vue/no-v-html -- safe: ansi-to-html output from server-processed image, not user text -->
+            <pre v-if="activeItem?.ansiText" ref="ansiPreEl" :style="{ zoom: ansiScale }" class="text-xs font-mono leading-none whitespace-pre inline-block" v-html="ansiHtml" />
+          </div>
+          <div v-if="processing" class="absolute inset-0 flex items-center justify-center">
+            <div class="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+          </div>
         </div>
-        <div class="flex gap-3">
-          <button class="inline-flex items-center gap-2 bg-zinc-700 hover:bg-zinc-600 text-white font-semibold rounded-lg px-5 py-3 text-sm transition-colors" @click="copyAnsi">{{ ansiCopied ? '✓ Copied' : 'Copy' }}</button>
-          <button class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-lg px-7 py-3 text-sm transition-colors" @click="downloadAnsi">↓ Download {{ activeItem.filename }}</button>
+        <div v-if="activeItem?.ansiText" class="flex gap-3">
+          <button class="inline-flex items-center gap-2 bg-zinc-700 hover:bg-zinc-600 text-white font-semibold rounded-lg px-5 py-3 text-sm shadow-[4px_4px_0_rgba(0,0,0,0.25)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-[box-shadow,transform,background-color] duration-75" @click="copyAnsi">{{ ansiCopied ? '✓ Copied' : 'Copy' }}</button>
+          <button class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded-lg px-7 py-3 text-sm shadow-[4px_4px_0_rgba(0,0,0,0.25)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-[box-shadow,transform,background-color] duration-75" @click="downloadAnsi">↓ Download {{ activeItem.filename }}</button>
         </div>
       </div>
+
+      <!-- Placeholder (md+ only) -->
+      <div v-if="!activeItem && !error && !processing" class="hidden md:flex border-2 border-dashed border-gray-200 dark:border-zinc-800 rounded-2xl min-h-48 items-center justify-center">
+        <p class="text-sm text-gray-300 dark:text-zinc-600 text-center px-6">{{ file ? 'Choose a preset or press Pixelate' : 'Upload an image to get started' }}</p>
+      </div>
+
+        </div><!-- end right col -->
+      </div><!-- end grid -->
 
       <!-- History -->
       <div v-if="history.length > 0" class="w-full mb-6">
@@ -360,6 +398,8 @@
 
 <script setup lang="ts">
 import { AnsiUp } from 'ansi_up'
+import type { Component } from 'vue'
+import { Sparkles, Cloud, Contrast, Feather, Moon, Sun, Snowflake, Film, Star, Droplets, Square, Circle, LayoutGrid, Hash, Hexagon, Diamond, Droplet, Zap, Monitor, Gamepad2, Smartphone, Joystick, Glasses, Terminal as TerminalIcon, Code } from 'lucide-vue-next'
 
 const colorMode = useColorMode()
 
@@ -398,11 +438,253 @@ const seed = ref('')
 const background = ref('')
 
 const processing = ref(false)
+const abortController = ref<AbortController | null>(null)
 const isPwa = ref(false)
 const error = ref<string | null>(null)
 
+const activePreset = ref('')
+
+type PresetCategory = 'retro' | 'aesthetic' | 'effects'
+
+type PresetDef = {
+  label: string
+  category: PresetCategory
+  icon?: Component
+  pixel?: number
+  pixelAuto?: boolean
+  autoPixelDensity?: number
+  shape?: typeof shape.value
+  palette?: string
+  dither?: boolean
+  greyscale?: boolean
+  invert?: boolean
+  gap?: number
+  contrast?: number
+  brightness?: number
+  saturation?: number
+  hue?: number
+  noise?: number
+  scanlines?: number
+  blur?: number
+}
+
+const presets: PresetDef[] = [
+  // Retro (main)
+  { label: 'Game Boy', category: 'retro', icon: Smartphone, pixelAuto: true, autoPixelDensity: 20, shape: 'rect', palette: 'gb', greyscale: true, dither: true },
+  { label: 'Game Boy Color', category: 'retro', icon: Smartphone, pixelAuto: true, autoPixelDensity: 22, shape: 'rect', palette: 'gbc' },
+  { label: 'NES', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 30, shape: 'rect', palette: 'nes' },
+  { label: 'SNES', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 35, shape: 'rect', palette: 'snes' },
+  { label: 'N64', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 40, shape: 'rect', palette: 'n64' },
+  { label: 'Genesis', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 38, shape: 'rect', palette: 'genesis' },
+  { label: 'Atari', category: 'retro', icon: Joystick, pixelAuto: true, autoPixelDensity: 18, shape: 'rect', palette: 'atari' },
+  { label: 'C64', category: 'retro', icon: TerminalIcon, pixelAuto: true, autoPixelDensity: 28, shape: 'rect', palette: 'c64' },
+  { label: 'PICO-8', category: 'retro', icon: Code, pixelAuto: true, autoPixelDensity: 16, shape: 'rect', palette: 'pico8' },
+  { label: 'CGA', category: 'retro', icon: Monitor, pixelAuto: true, autoPixelDensity: 32, shape: 'rect', palette: 'cga' },
+  // Retro (extended)
+  { label: 'Game Boy Pocket', category: 'retro', icon: Smartphone, pixelAuto: true, autoPixelDensity: 20, shape: 'rect', palette: 'gbp', greyscale: true, dither: true },
+  { label: 'Game Boy Advance', category: 'retro', icon: Smartphone, pixelAuto: true, autoPixelDensity: 24, shape: 'rect', palette: 'gba' },
+  { label: 'Virtual Boy', category: 'retro', icon: Glasses, pixelAuto: true, autoPixelDensity: 38, shape: 'rect', palette: 'vb', greyscale: true },
+  { label: 'Master System', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 30, shape: 'rect', palette: 'sms' },
+  { label: 'Game Gear', category: 'retro', icon: Smartphone, pixelAuto: true, autoPixelDensity: 20, shape: 'rect', palette: 'gg' },
+  { label: 'TurboGrafx-16', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 35, shape: 'rect', palette: 'tg16' },
+  { label: 'Neo Geo', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 38, shape: 'rect', palette: 'neogeo' },
+  { label: 'PS1', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 40, shape: 'rect', palette: 'ps1' },
+  { label: 'MSX', category: 'retro', icon: TerminalIcon, pixelAuto: true, autoPixelDensity: 28, shape: 'rect', palette: 'msx' },
+  { label: 'ZX Spectrum', category: 'retro', icon: TerminalIcon, pixelAuto: true, autoPixelDensity: 28, shape: 'rect', palette: 'zxspectrum' },
+  { label: 'Amstrad', category: 'retro', icon: TerminalIcon, pixelAuto: true, autoPixelDensity: 30, shape: 'rect', palette: 'amstrad' },
+  { label: 'Amiga', category: 'retro', icon: TerminalIcon, pixelAuto: true, autoPixelDensity: 36, shape: 'rect', palette: 'amiga' },
+  { label: 'Apple II', category: 'retro', icon: TerminalIcon, pixelAuto: true, autoPixelDensity: 26, shape: 'rect', palette: 'apple2' },
+  { label: 'EGA', category: 'retro', icon: Monitor, pixelAuto: true, autoPixelDensity: 32, shape: 'rect', palette: 'ega' },
+  // Aesthetic
+  { label: 'Vaporwave', category: 'aesthetic', pixelAuto: true, shape: 'circle', palette: 'vaporwave', gap: 1 },
+  { label: 'Noir', category: 'aesthetic', pixelAuto: true, shape: 'rect', greyscale: true, contrast: 1.3, brightness: 0.85 },
+  { label: 'Sepia', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'sepia' },
+  { label: 'Neon', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'neon' },
+  { label: 'Pastel', category: 'aesthetic', pixelAuto: true, shape: 'circle', palette: 'pastel', gap: 1 },
+  { label: 'Ocean', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'ocean' },
+  { label: 'Sunset', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'sunset' },
+  { label: 'Dracula', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'dracula' },
+  { label: 'Nord', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'nord' },
+  { label: 'Terminal', category: 'aesthetic', pixel: 4, shape: 'rect', palette: 'terminal', scanlines: 1 },
+  { label: 'Amber', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'amber', greyscale: true },
+  { label: 'Forest', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'forest' },
+  { label: 'Lava', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'lava' },
+  { label: 'Sakura', category: 'aesthetic', pixelAuto: true, shape: 'circle', palette: 'sakura', gap: 1 },
+  { label: 'Rainbow', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'rainbow' },
+  { label: 'Mono', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'mono', greyscale: true },
+  // Effects
+  { label: 'Pixel Art', category: 'effects', icon: Square, pixel: 16, shape: 'rect' },
+  { label: 'Halftone', category: 'effects', icon: Circle, pixelAuto: true, shape: 'circle', gap: 2 },
+  { label: 'Mosaic', category: 'effects', icon: LayoutGrid, pixel: 20, shape: 'round-rect', gap: 3 },
+  { label: 'Cross-Stitch', category: 'effects', icon: Hash, pixel: 12, shape: 'cross-alt', gap: 2 },
+  { label: 'Honeycomb', category: 'effects', icon: Hexagon, pixelAuto: true, shape: 'hexagon', gap: 2 },
+  { label: 'Diamond', category: 'effects', icon: Diamond, pixelAuto: true, shape: 'diamond', gap: 2 },
+  { label: 'Watercolor', category: 'effects', icon: Droplet, pixelAuto: true, shape: 'rect', palette: 'pastel', blur: 2 },
+  { label: 'Glitch', category: 'effects', icon: Zap, pixelAuto: true, shape: 'rect', noise: 25, contrast: 1.1 },
+  { label: 'Retro CRT', category: 'effects', icon: Monitor, pixel: 4, shape: 'rect', palette: 'nes', scanlines: 2, contrast: 1.2 },
+]
+
+const presetCategories: { key: PresetCategory; label: string }[] = [
+  { key: 'retro', label: 'Retro' },
+  { key: 'aesthetic', label: 'Aesthetic' },
+  { key: 'effects', label: 'Effects' },
+]
+const presetCategory = ref<PresetCategory>('retro')
+const showAllRetro = ref(false)
+
+const mainRetroLabels = new Set(['Game Boy', 'Game Boy Color', 'NES', 'SNES', 'N64', 'Genesis', 'Atari', 'C64', 'PICO-8', 'CGA'])
+
+const filteredPresets = computed(() => {
+  const all = presets.filter((p) => p.category === presetCategory.value)
+  if (presetCategory.value === 'retro' && !showAllRetro.value) {
+    return all.filter((p) => mainRetroLabels.has(p.label))
+  }
+  return all
+})
+
+type MoodDef = {
+  label: string
+  icon: Component
+  brightness?: number
+  contrast?: number
+  saturation?: number
+  hue?: number
+}
+
+const moods: MoodDef[] = [
+  { label: 'Vivid', icon: Sparkles, saturation: 1.4, contrast: 1.15 },
+  { label: 'Faded', icon: Cloud, saturation: 0.5, brightness: 1.05, contrast: 0.85 },
+  { label: 'High Contrast', icon: Contrast, contrast: 1.6, brightness: 0.95 },
+  { label: 'Muted', icon: Feather, saturation: 0.7, contrast: 0.9 },
+  { label: 'Dark', icon: Moon, brightness: 0.7, contrast: 1.2 },
+  { label: 'Warm', icon: Sun, hue: -15, saturation: 1.1 },
+  { label: 'Cool', icon: Snowflake, hue: 15, saturation: 1.05 },
+  { label: 'Cinematic', icon: Film, contrast: 1.3, saturation: 0.85, brightness: 0.9 },
+  { label: 'Dreamy', icon: Star, brightness: 1.15, contrast: 0.8, saturation: 0.8 },
+  { label: 'Washed', icon: Droplets, brightness: 1.2, contrast: 0.7, saturation: 0.5 },
+]
+
+const activeMood = ref('')
+
+const categoryStyle: Record<PresetCategory, { active: string; inactive: string; tabActive: string }> = {
+  retro: {
+    active: 'bg-amber-400 text-zinc-900 shadow-[3px_3px_0_rgba(0,0,0,0.25)]',
+    inactive: 'bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-400 shadow-[2px_2px_0_rgba(0,0,0,0.12)]',
+    tabActive: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400'
+  },
+  aesthetic: {
+    active: 'bg-fuchsia-500 text-white shadow-[3px_3px_0_rgba(0,0,0,0.25)]',
+    inactive: 'bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 hover:bg-fuchsia-50 dark:hover:bg-fuchsia-950/20 hover:text-fuchsia-700 dark:hover:text-fuchsia-400 shadow-[2px_2px_0_rgba(0,0,0,0.12)]',
+    tabActive: 'bg-fuchsia-100 dark:bg-fuchsia-900/40 text-fuchsia-700 dark:text-fuchsia-400'
+  },
+  effects: {
+    active: 'bg-teal-400 text-zinc-900 shadow-[3px_3px_0_rgba(0,0,0,0.25)]',
+    inactive: 'bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 hover:bg-teal-50 dark:hover:bg-teal-950/20 hover:text-teal-700 dark:hover:text-teal-400 shadow-[2px_2px_0_rgba(0,0,0,0.12)]',
+    tabActive: 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-400'
+  }
+}
+
+const moodActiveClass: Record<string, string> = {
+  'Vivid': 'bg-pink-500 text-white shadow-[3px_3px_0_rgba(0,0,0,0.25)]',
+  'Faded': 'bg-slate-400 text-white shadow-[3px_3px_0_rgba(0,0,0,0.25)]',
+  'High Contrast': 'bg-red-500 text-white shadow-[3px_3px_0_rgba(0,0,0,0.25)]',
+  'Muted': 'bg-purple-500 text-white shadow-[3px_3px_0_rgba(0,0,0,0.25)]',
+  'Dark': 'bg-indigo-700 text-white shadow-[3px_3px_0_rgba(0,0,0,0.25)]',
+  'Warm': 'bg-orange-400 text-zinc-900 shadow-[3px_3px_0_rgba(0,0,0,0.25)]',
+  'Cool': 'bg-cyan-400 text-zinc-900 shadow-[3px_3px_0_rgba(0,0,0,0.25)]',
+  'Cinematic': 'bg-rose-700 text-white shadow-[3px_3px_0_rgba(0,0,0,0.25)]',
+  'Dreamy': 'bg-pink-300 text-zinc-900 shadow-[3px_3px_0_rgba(0,0,0,0.25)]',
+  'Washed': 'bg-sky-300 text-zinc-900 shadow-[3px_3px_0_rgba(0,0,0,0.25)]'
+}
+
+let autoProcessTimer: ReturnType<typeof setTimeout> | null = null
+const triggerAutoProcess = () => {
+  if (!file.value) return
+  if (autoProcessTimer) clearTimeout(autoProcessTimer)
+  autoProcessTimer = setTimeout(() => {
+    autoProcessTimer = null
+    process()
+  }, 350)
+}
+
+watch(
+  [pixelSize, pixelAuto, autoPixelDensity, format, palette, dither, greyscale, invert, blur, brightness, contrast, saturation, hue, noise, colorCount, shape, gap, scale, scanlines, seed, background],
+  () => { triggerAutoProcess() }
+)
+
+const applyMood = (mood: MoodDef) => {
+  if (activeMood.value === mood.label) {
+    activeMood.value = ''
+    brightness.value = 1
+    contrast.value = 1
+    saturation.value = 1
+    hue.value = 0
+    triggerAutoProcess()
+    return
+  }
+  activeMood.value = mood.label
+  brightness.value = mood.brightness ?? 1
+  contrast.value = mood.contrast ?? 1
+  saturation.value = mood.saturation ?? 1
+  hue.value = mood.hue ?? 0
+  triggerAutoProcess()
+}
+
+const applyPreset = (preset: PresetDef) => {
+  const prevMood = activeMood.value ? moods.find(m => m.label === activeMood.value) : null
+  const prevShowAdj = showAdjustments.value
+  resetOptions()
+  showAdjustments.value = prevShowAdj
+  activePreset.value = preset.label
+  if (preset.pixel !== undefined) pixelSize.value = preset.pixel
+  if (preset.pixelAuto !== undefined) pixelAuto.value = preset.pixelAuto
+  if (preset.autoPixelDensity !== undefined) autoPixelDensity.value = preset.autoPixelDensity
+  if (preset.shape !== undefined) shape.value = preset.shape
+  if (preset.palette !== undefined) palette.value = preset.palette
+  if (preset.dither !== undefined) dither.value = preset.dither
+  if (preset.greyscale !== undefined) greyscale.value = preset.greyscale
+  if (preset.invert !== undefined) invert.value = preset.invert
+  if (preset.gap !== undefined) gap.value = preset.gap
+  if (preset.contrast !== undefined) contrast.value = preset.contrast
+  if (preset.brightness !== undefined) brightness.value = preset.brightness
+  if (preset.saturation !== undefined) saturation.value = preset.saturation
+  if (preset.hue !== undefined) hue.value = preset.hue
+  if (preset.noise !== undefined) noise.value = preset.noise
+  if (preset.scanlines !== undefined) scanlines.value = preset.scanlines
+  if (preset.blur !== undefined) blur.value = preset.blur
+  if (prevMood) {
+    activeMood.value = prevMood.label
+    brightness.value = prevMood.brightness ?? 1
+    contrast.value = prevMood.contrast ?? 1
+    saturation.value = prevMood.saturation ?? 1
+    hue.value = prevMood.hue ?? 0
+  }
+  triggerAutoProcess()
+}
+
+type HistoryItem = { url: string | null; ansiText: string | null; filename: string; label: string }
+const history = ref<HistoryItem[]>([])
+const activeItem = ref<HistoryItem | null>(null)
+
 const ansiUp = new AnsiUp()
 const ansiHtml = computed(() => (activeItem.value?.ansiText ? ansiUp.ansi_to_html(activeItem.value.ansiText) : ''))
+
+const ansiPreEl = ref<HTMLElement | null>(null)
+const ansiContainerEl = ref<HTMLElement | null>(null)
+const resultEl = ref<HTMLElement | null>(null)
+const ansiScale = ref(1)
+
+watch(() => activeItem.value?.ansiText, async () => {
+  ansiScale.value = 1
+  if (!activeItem.value?.ansiText) return
+  await nextTick()
+  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+  if (!ansiContainerEl.value || !ansiPreEl.value) return
+  const available = ansiContainerEl.value.clientWidth - 32
+  if (available <= 0) return
+  const natural = ansiPreEl.value.scrollWidth
+  if (natural > available) ansiScale.value = available / natural
+})
 const isAnsi = computed(() => format.value === 'ansi')
 const hasBackground = computed(() => format.value !== 'jpeg' && format.value !== 'ansi')
 
@@ -422,6 +704,9 @@ watch([pixelAuto, previewUrl, autoPixelDensity], () => {
 const showAdjustments = ref(false)
 const activeAdjustmentCount = computed(() => {
   let n = 0
+  if (dither.value) n++
+  if (greyscale.value) n++
+  if (invert.value) n++
   if (scale.value !== 1) n++
   if (gap.value > 0) n++
   if (blur.value > 0) n++
@@ -432,13 +717,24 @@ const activeAdjustmentCount = computed(() => {
   if (noise.value > 0) n++
   if (colorCount.value !== '') n++
   if (scanlines.value > 0) n++
-  if (background.value && hasBackground.value) n++
   return n
 })
 
-type HistoryItem = { url: string | null; ansiText: string | null; filename: string; label: string }
-const history = ref<HistoryItem[]>([])
-const activeItem = ref<HistoryItem | null>(null)
+const { data: palettesData } = useFetch<Record<string, string[]>>('/api/palettes', { server: false })
+
+const presetGradients = computed(() => {
+  const result: Record<string, string> = {}
+  if (!palettesData.value) return result
+  for (const p of presets) {
+    if (!p.palette) continue
+    const colors = palettesData.value[p.palette]
+    if (!colors?.length) continue
+    const max = 10
+    const sampled = colors.length <= max ? colors : Array.from({ length: max }, (_, i) => colors[Math.floor((i * colors.length) / max)])
+    result[p.label] = `linear-gradient(to right, ${sampled.join(', ')})`
+  }
+  return result
+})
 
 const clearHistory = () => {
   for (const item of history.value) {
@@ -458,6 +754,8 @@ const clearAll = () => {
 }
 
 const resetOptions = () => {
+  activePreset.value = ''
+  activeMood.value = ''
   pixelSize.value = 20
   pixelAuto.value = false
   autoPixelDensity.value = 50
@@ -493,59 +791,6 @@ const downloadHistoryAnsi = (item: HistoryItem) => {
   URL.revokeObjectURL(url)
 }
 
-const { data: allPalettes } = useFetch<Record<string, string[]>>('/api/palettes')
-
-const retroKeys = ['amiga', 'amstrad', 'apple2', 'atari', 'c64', 'cga', 'ega', 'gb', 'gba', 'gbc', 'gbp', 'gg', 'genesis', 'sms', 'msx', 'n64', 'neogeo', 'nes', 'pico8', 'ps1', 'snes', 'tg16', 'vb', 'zxspectrum']
-const aestheticKeys = ['amber', 'dracula', 'forest', 'lava', 'mono', 'monokai', 'neon', 'nord', 'ocean', 'pastel', 'rainbow', 'sakura', 'sepia', 'solarized', 'sunset', 'terminal', 'vaporwave']
-
-const retroPalettes = computed(() => retroKeys.filter((k) => allPalettes.value?.[k]))
-const aestheticPalettes = computed(() => aestheticKeys.filter((k) => allPalettes.value?.[k]))
-const selectedPaletteColors = computed(() => (palette.value && allPalettes.value ? (allPalettes.value[palette.value] ?? []) : []))
-
-const paletteLabels: Record<string, string> = {
-  gb: 'Game Boy',
-  gbp: 'Game Boy Pocket',
-  gbc: 'Game Boy Color',
-  gba: 'Game Boy Advance',
-  vb: 'Virtual Boy',
-  nes: 'NES',
-  snes: 'SNES',
-  n64: 'N64',
-  genesis: 'Genesis',
-  gg: 'Game Gear',
-  tg16: 'TurboGrafx-16',
-  neogeo: 'Neo Geo',
-  msx: 'MSX',
-  atari: 'Atari',
-  c64: 'C64',
-  pico8: 'PICO-8',
-  cga: 'CGA',
-  ega: 'EGA',
-  zxspectrum: 'ZX Spectrum',
-  amstrad: 'Amstrad',
-  amiga: 'Amiga',
-  apple2: 'Apple II',
-  ps1: 'PS1',
-  sms: 'Master System',
-  rainbow: 'Rainbow',
-  mono: 'Mono',
-  sepia: 'Sepia',
-  neon: 'Neon',
-  pastel: 'Pastel',
-  amber: 'Amber',
-  dracula: 'Dracula',
-  nord: 'Nord',
-  solarized: 'Solarized',
-  monokai: 'Monokai',
-  sunset: 'Sunset',
-  forest: 'Forest',
-  ocean: 'Ocean',
-  lava: 'Lava',
-  sakura: 'Sakura',
-  vaporwave: 'Vaporwave',
-  terminal: 'Terminal'
-}
-const paletteLabel = (key: string) => paletteLabels[key] ?? key
 
 const features = [
   {
@@ -568,6 +813,7 @@ const setFile = (f: File) => {
   file.value = f
   previewUrl.value = URL.createObjectURL(f)
   error.value = null
+  triggerAutoProcess()
 }
 
 const handleDrop = (e: DragEvent) => {
@@ -583,7 +829,11 @@ const handleFileChange = (e: Event) => {
 }
 
 const process = async () => {
-  if (!file.value || processing.value) return
+  if (!file.value) return
+
+  abortController.value?.abort()
+  const controller = new AbortController()
+  abortController.value = controller
 
   processing.value = true
   error.value = null
@@ -612,9 +862,10 @@ const process = async () => {
   if (background.value && hasBackground.value) form.append('background', background.value)
 
   try {
-    const res = await fetch('/api/pixelate', { method: 'POST', body: form })
+    const res = await fetch('/api/pixelate', { method: 'POST', body: form, signal: controller.signal })
 
     if (!res.ok) {
+      if (controller.signal.aborted) return
       const data = (await res.json().catch(() => ({ message: 'Pixelation failed' }))) as { message?: string }
       error.value = data.message ?? 'Pixelation failed'
       return
@@ -622,7 +873,9 @@ const process = async () => {
 
     const data = (await res.json()) as { data: string; filename: string; mimeType: string }
 
-    const label = `${pixelSize.value}px · ${format.value.toUpperCase()}${palette.value ? ' · ' + palette.value : ''}`
+    if (controller.signal.aborted) return
+
+    const label = `${activePreset.value ? activePreset.value + ' · ' : ''}${activeMood.value ? activeMood.value + ' · ' : ''}${pixelAuto.value ? 'auto' : pixelSize.value + 'px'} · ${format.value.toUpperCase()}`
     let url: string | null = null
     let ansi: string | null = null
 
@@ -638,10 +891,20 @@ const process = async () => {
     const item: HistoryItem = { url, ansiText: ansi, filename: data.filename, label }
     history.value.unshift(item)
     activeItem.value = item
+
+    if (window.innerWidth < 768) {
+      await nextTick()
+      resultEl.value?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Pixelation failed'
+    if ((err as Error)?.name !== 'AbortError') {
+      error.value = err instanceof Error ? err.message : 'Pixelation failed'
+    }
   } finally {
-    processing.value = false
+    if (abortController.value === controller) {
+      processing.value = false
+      abortController.value = null
+    }
   }
 }
 

@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
   const scale = parseFloat(get('scale') ?? '1')
   const background = get('background') || undefined
   const blurRaw = parseFloat(get('blur') ?? '0')
-  const blur = blurRaw > 0 ? blurRaw : undefined
+  const blur = blurRaw >= 0.3 ? blurRaw : undefined
   const noiseRaw = parseFloat(get('noise') ?? '0')
   const noise = noiseRaw > 0 ? noiseRaw : undefined
   const scanlines = parseInt(get('scanlines') ?? '0', 10)
