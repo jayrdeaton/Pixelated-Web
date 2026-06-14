@@ -44,29 +44,37 @@ export default defineEventHandler(async (event) => {
     const v = get(name)
     return v !== undefined ? parseInt(v, 10) : undefined
   }
+  const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v))
+  const clampF = (v: number | undefined, min: number, max: number) => (v !== undefined ? clamp(v, min, max) : undefined)
 
   const pixelRaw = get('pixel') ?? '20'
-  const pixel = pixelRaw === 'auto' ? 'auto' : parseInt(pixelRaw, 10)
-  const autoPixelDensity = getInt('autoPixelDensity')
+  const pixel = pixelRaw === 'auto' ? 'auto' : clamp(parseInt(pixelRaw, 10), 1, 200)
+  const autoPixelDensityRaw = getInt('autoPixelDensity')
+  const autoPixelDensity = autoPixelDensityRaw !== undefined ? clamp(autoPixelDensityRaw, 1, 200) : undefined
   const format = (get('format') ?? 'png') as WebFormat
   const paletteKey = get('palette') || undefined
   const dither = get('dither') === 'true'
   const greyscale = get('greyscale') === 'true'
   const invert = get('invert') === 'true'
   const shape = (get('shape') ?? 'rect') as PixelatedShape
-  const gap = parseInt(get('gap') ?? '0', 10)
-  const scale = parseFloat(get('scale') ?? '1')
+  const gap = clamp(parseInt(get('gap') ?? '0', 10), 0, 50)
+  const scale = clamp(parseFloat(get('scale') ?? '1'), 0.1, 10)
   const background = get('background') || undefined
-  const blurRaw = parseFloat(get('blur') ?? '0')
+  const blurRaw = clamp(parseFloat(get('blur') ?? '0'), 0, 20)
   const blur = blurRaw >= 0.3 ? blurRaw : undefined
-  const noiseRaw = parseFloat(get('noise') ?? '0')
+  const noiseRaw = clamp(parseFloat(get('noise') ?? '0'), 0, 100)
   const noise = noiseRaw > 0 ? noiseRaw : undefined
-  const scanlines = parseInt(get('scanlines') ?? '0', 10)
-  const colorCount = getInt('colorCount')
-  const brightness = getFloat('brightness')
-  const contrast = getFloat('contrast')
-  const saturation = getFloat('saturation')
-  const hue = getFloat('hue')
+  const scanlines = clamp(parseInt(get('scanlines') ?? '0', 10), 0, 20)
+  const colorCountRaw = getInt('colorCount')
+  const colorCount = colorCountRaw !== undefined ? clamp(colorCountRaw, 0, 256) : undefined
+  const brightness = clampF(getFloat('brightness'), 0.1, 3)
+  const contrast = clampF(getFloat('contrast'), 0, 3)
+  const saturation = clampF(getFloat('saturation'), 0, 3)
+  const hue = clampF(getFloat('hue'), -180, 180)
+  const vibrancyRaw = clampF(getFloat('vibrancy'), 0, 1)
+  const vibrancy = vibrancyRaw && vibrancyRaw > 0 ? vibrancyRaw : undefined
+  const remapRaw = clampF(getFloat('remap'), 0, 1)
+  const remap = remapRaw && remapRaw > 0 ? remapRaw : undefined
   const seed = getInt('seed')
 
   const uuid = randomUUID()
@@ -101,6 +109,8 @@ export default defineEventHandler(async (event) => {
       contrast,
       saturation,
       hue,
+      vibrancy,
+      remap,
       seed
     })
 

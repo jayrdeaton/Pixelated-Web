@@ -1,0 +1,55 @@
+<template>
+  <div v-if="!isPwa" class="mt-24 pt-12 border-t border-gray-200 dark:border-zinc-800">
+    <h2 class="text-2xl font-semibold mb-8 text-center">Also available as a CLI</h2>
+
+    <div class="grid sm:grid-cols-2 gap-4 mb-8">
+      <div>
+        <p class="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">Install</p>
+        <div class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl px-4 py-3 font-mono text-sm text-emerald-600 dark:text-emerald-400 shadow-sm dark:shadow-none">npm install -g pixelated</div>
+      </div>
+      <div>
+        <p class="text-xs font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">Usage</p>
+        <div class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl px-4 py-3 font-mono text-sm text-emerald-600 dark:text-emerald-400 shadow-sm dark:shadow-none">pixelated &lt;input&gt; [options]</div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl p-5 mb-10 font-mono text-sm text-gray-700 dark:text-zinc-300 leading-7 shadow-sm dark:shadow-none">
+      <p><span class="text-violet-500 dark:text-violet-400">--pixel</span> <span class="text-gray-400 dark:text-zinc-500">n|nxn|auto</span> Pixel block size (default: 20)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--autoPixelDensity</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Divisor for auto pixel size (default: 50)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--format</span> <span class="text-gray-400 dark:text-zinc-500">png|jpeg|webp|avif|svg|ansi</span> Output format (default: png)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--palette</span> <span class="text-gray-400 dark:text-zinc-500">gb|nes|pico8|dracula|nord|…</span> Snap colors to a palette</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--dither</span> Floyd-Steinberg dithering (requires --palette)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--greyscale</span> Convert to greyscale</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--invert</span> Invert colors</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--blur</span> <span class="text-gray-400 dark:text-zinc-500">σ</span> Pre-pixelation blur sigma</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--brightness</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Brightness multiplier (default: 1)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--contrast</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Contrast multiplier (default: 1)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--saturation</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Saturation multiplier (default: 1)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--hue</span> <span class="text-gray-400 dark:text-zinc-500">°</span> Hue rotation in degrees (default: 0)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--vibrancy</span> <span class="text-gray-400 dark:text-zinc-500">0–1</span> Bias palette toward saturated colors (requires --palette)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--remap</span> <span class="text-gray-400 dark:text-zinc-500">0-1</span> Pre-shift pixels toward palette colors before pixelating (requires --palette)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--noise</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Random color noise amount</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--colorCount</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Quantize output to n colors</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--shape</span> <span class="text-gray-400 dark:text-zinc-500 break-all">rect|round-rect|circle|ring|diamond|triangle|triangle-alt|hexagon|pentagon|pentagon-alt|star|star-alt|cross|cross-alt|x|asterisk|hash|heart|heart-alt</span> Pixel shape (default: rect)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--gap</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Gap between pixels in px (default: 0)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--scale</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Output scale multiplier (default: 1)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--scanlines</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Scanline gap height in px</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--background</span> <span class="text-gray-400 dark:text-zinc-500">#rrggbb</span> Background fill color</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--seed</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Seed for deterministic noise</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--output</span> <span class="text-gray-400 dark:text-zinc-500">path</span> Output file path</p>
+    </div>
+
+    <div class="grid sm:grid-cols-3 gap-4">
+      <div v-for="feature in features" :key="feature.title" class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm dark:shadow-none">
+        <h3 class="font-semibold mb-1.5">{{ feature.title }}</h3>
+        <p class="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed">{{ feature.description }}</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { features, usePixelate } from '@/composables/usePixelate'
+
+const { isPwa } = usePixelate()
+</script>
