@@ -132,6 +132,7 @@ export default defineEventHandler(async (event) => {
     }
   } catch (e) {
     if (e && typeof e === 'object' && 'statusCode' in e) throw e
+    console.error('[pixelate] error:', e)
     throw createError({ statusCode: 500, message: (e as Error).message ?? 'Processing failed' })
   } finally {
     await unlink(inputPath).catch(() => {})
