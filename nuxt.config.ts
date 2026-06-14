@@ -60,7 +60,12 @@ export default defineNuxtConfig({
   },
   nitro: {
     externals: {
-      external: ['sharp', 'pixelated']
+      external: ['sharp', 'pixelated'],
+      traceInclude: [
+        './node_modules/sharp/**',
+        './node_modules/@img/**',
+        './node_modules/pixelated/**'
+      ]
     },
     vercel: {
       functions: {
