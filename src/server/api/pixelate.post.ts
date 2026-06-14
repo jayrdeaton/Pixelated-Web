@@ -1,8 +1,9 @@
 import { randomUUID } from 'crypto'
 import { readFile, unlink, writeFile } from 'fs/promises'
-import { extname } from 'path'
-import { join } from 'path'
+import { extname, join } from 'path'
 import type { PaletteKey, PixelatedFormat, PixelatedShape } from 'pixelated'
+import pixelated from 'pixelated'
+import sharp from 'sharp'
 
 type WebFormat = PixelatedFormat
 
@@ -81,15 +82,6 @@ export default defineEventHandler(async (event) => {
   const inputPath = join('/tmp', `pxl-in-${uuid}${inputExt}`)
   const outputPath = join('/tmp', `pxl-out-${uuid}${outExt}`)
 
-  let sharp: typeof import('sharp').default
-  let pixelated: typeof import('pixelated').default
-  try {
-    sharp = (await import('sharp')).default
-    pixelated = (await import('pixelated')).default
-  } catch (e) {
-    throw createError({ statusCode: 500, message: `module load failed: ${(e as Error).message}` })
-  }
-
   try {
     const orientedData = await sharp(fileField.data).rotate().toBuffer()
     await writeFile(inputPath, orientedData)
@@ -132,7 +124,6 @@ export default defineEventHandler(async (event) => {
     }
   } catch (e) {
     if (e && typeof e === 'object' && 'statusCode' in e) throw e
-    console.error('[pixelate] error:', e)
     throw createError({ statusCode: 500, message: (e as Error).message ?? 'Processing failed' })
   } finally {
     await unlink(inputPath).catch(() => {})
