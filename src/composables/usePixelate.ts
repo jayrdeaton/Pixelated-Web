@@ -25,6 +25,7 @@ export type PresetDef = {
   vibrancy?: number
   remap?: number
   noise?: number
+  colorCount?: number
   scanlines?: number
   blur?: number
 }
