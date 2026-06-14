@@ -40,6 +40,23 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           NITRO_PRESET: vercel
 
+      - name: Bundle sharp native libraries
+        run: |
+          SRC="node_modules/@img/sharp-libvips-linux-x64"
+          if [ -d "$SRC" ]; then
+            for func_dir in .vercel/output/functions/*.func; do
+              if [ -d "$func_dir" ]; then
+                DEST="$func_dir/node_modules/@img/sharp-libvips-linux-x64"
+                mkdir -p "$DEST"
+                cp -rn "$SRC/." "$DEST/"
+                echo "Copied sharp libvips to $DEST"
+                ls "$DEST/lib/" 2>/dev/null || echo "lib dir missing"
+              fi
+            done
+          else
+            echo "sharp-libvips-linux-x64 not found in node_modules (expected on linux)"
+          fi
+
       - name: Deploy
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
         env:
