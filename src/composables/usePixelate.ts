@@ -91,7 +91,7 @@ export const presets: PresetDef[] = [
   { label: 'Terminal', category: 'aesthetic', pixel: 4, shape: 'rect', palette: 'terminal', scanlines: 1 },
   { label: 'Vaporwave', category: 'aesthetic', pixelAuto: true, shape: 'circle', palette: 'vaporwave', gap: 1 },
   // Effects
-  { label: 'Bacon', category: 'effects', icon: Flame, pixelAuto: true, shape: 'bacon', gap: 2, palette: 'lava' },
+  { label: 'Bacon', category: 'effects', icon: Flame, pixelAuto: true, shape: 'bacon', gap: 2, palette: 'bacon' },
   { label: 'Cartoon', category: 'effects', icon: Wand2, pixelAuto: true, saturation: 2.5, colorCount: 6, contrast: 1.4 },
   { label: 'Cross-Stitch', category: 'effects', icon: Hash, pixel: 12, shape: 'cross', gap: 2 },
   { label: 'Diamond', category: 'effects', icon: Diamond, pixelAuto: true, shape: 'diamond', gap: 2 },
@@ -639,8 +639,8 @@ export function createPixelateState() {
   })
 
   const randomize = () => {
-    const randomPreset = presets[Math.floor(Math.random() * presets.length)]
-    const randomMood = moods[Math.floor(Math.random() * moods.length)]
+    const randomPreset = presets[Math.floor(Math.random() * presets.length)]!
+    const randomMood = moods[Math.floor(Math.random() * moods.length)]!
     applyPreset(randomPreset)
     applyMood(randomMood)
     presetCategory.value = randomPreset.category
