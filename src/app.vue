@@ -12,19 +12,38 @@
         <p class="text-gray-500 dark:text-zinc-400 text-lg leading-relaxed">Upload an image, choose your settings, and download your pixelated image in seconds.</p>
       </div>
 
-      <div class="md:grid md:grid-cols-2 md:gap-6 md:items-start mb-6">
-        <div class="mb-6 md:mb-0">
-          <div class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm dark:shadow-none">
-            <ImageDropZone />
-            <PresetsPanel />
-            <MoodPanel />
-            <PixelControls />
-          </div>
+      <div class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm dark:shadow-none mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-sm font-medium text-gray-500 dark:text-zinc-400">Image</span>
+          <button class="text-sm text-gray-400 dark:text-zinc-500 hover:text-red-500 dark:hover:text-red-400 transition-colors" @click="clearImage">Clear</button>
         </div>
-        <ResultPanel />
+        <div :class="showResult ? 'grid grid-cols-1 md:grid-cols-2 gap-6' : ''">
+          <ImageDropZone />
+          <ResultPanel v-if="showResult" />
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm dark:shadow-none mb-6">
+        <div class="flex items-center justify-between mb-5">
+          <span class="text-sm font-medium text-gray-500 dark:text-zinc-400">Settings</span>
+          <button class="text-sm text-gray-400 dark:text-zinc-500 hover:text-red-500 dark:hover:text-red-400 transition-colors" @click="resetOptions">Clear</button>
+        </div>
+        <MoodPanel />
+        <PresetsPanel />
+        <PixelControls />
       </div>
 
       <HistoryPanel />
+
+      <div v-if="!isPwa" class="mt-12 pt-12 border-t border-gray-200 dark:border-zinc-800">
+        <div class="grid sm:grid-cols-3 gap-4">
+          <div v-for="feature in features" :key="feature.title" class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm dark:shadow-none">
+            <h3 class="font-semibold mb-1.5">{{ feature.title }}</h3>
+            <p class="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed">{{ feature.description }}</p>
+          </div>
+        </div>
+      </div>
+
       <CliSection />
     </main>
 
@@ -33,7 +52,11 @@
 </template>
 
 <script setup lang="ts">
-import { createPixelateState, PIXELATE_KEY } from '@/composables/usePixelate'
+import { computed } from 'vue'
+import { createPixelateState, PIXELATE_KEY, features } from '@/composables/usePixelate'
 
-provide(PIXELATE_KEY, createPixelateState())
+const state = createPixelateState()
+provide(PIXELATE_KEY, state)
+const { clearImage, resetOptions, activeItem, processing, isPwa } = state
+const showResult = computed(() => !!(activeItem.value || processing.value))
 </script>

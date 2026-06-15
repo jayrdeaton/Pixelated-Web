@@ -75,6 +75,18 @@ export default defineEventHandler(async (event) => {
   const remapRaw = clampF(getFloat('remap'), 0, 1)
   const remap = remapRaw && remapRaw > 0 ? remapRaw : undefined
   const seed = getInt('seed')
+  const jitterRaw = clampF(getFloat('jitter'), 0, 20)
+  const jitter = jitterRaw && jitterRaw > 0 ? jitterRaw : undefined
+  const sizeVarianceRaw = clampF(getFloat('sizeVariance'), 0, 1)
+  const sizeVariance = sizeVarianceRaw && sizeVarianceRaw > 0 ? sizeVarianceRaw : undefined
+  const pulseRaw = clampF(getFloat('pulse'), 0, 1)
+  const pulse = pulseRaw && pulseRaw > 0 ? pulseRaw : undefined
+  const waveRaw = clampF(getFloat('wave'), 0, 20)
+  const wave = waveRaw && waveRaw > 0 ? waveRaw : undefined
+  const brightnessSizeRaw = clampF(getFloat('brightnessSize'), 0, 1)
+  const brightnessSize = brightnessSizeRaw && brightnessSizeRaw > 0 ? brightnessSizeRaw : undefined
+  const alt = get('alt') === 'true' || undefined
+  const offset = get('offset') === 'true' || undefined
 
   const uuid = randomUUID()
   const inputExt = extname(fileField.filename ?? 'input.png') || '.png'
@@ -98,6 +110,8 @@ export default defineEventHandler(async (event) => {
       invert,
       blur,
       shape,
+      alt,
+      offset,
       gap,
       scale,
       background,
@@ -110,7 +124,12 @@ export default defineEventHandler(async (event) => {
       hue,
       vibrancy,
       remap,
-      seed
+      seed,
+      jitter,
+      sizeVariance,
+      pulse,
+      wave,
+      brightnessSize
     })
 
     const outputData = await readFile(outputPath)

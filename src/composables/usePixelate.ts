@@ -1,9 +1,9 @@
 import { AnsiUp } from 'ansi_up'
-import { Circle, Cloud, Code, Contrast, Diamond, Droplet, Droplets, Feather, Film, Gamepad2, Glasses, Hash, Hexagon, Joystick, LayoutGrid, Monitor, Moon, Palette, Smartphone, Snowflake, Sparkles, Square, Star, Sun, Terminal as TerminalIcon, Wand2, Zap } from 'lucide-vue-next'
+import { Circle, Cloud, Code, Contrast, Diamond, Droplet, Droplets, Feather, Film, Flame, Gamepad2, Glasses, Hash, Hexagon, Joystick, LayoutGrid, Monitor, Moon, Palette, Smartphone, Snowflake, Sparkles, Square, Star, Sun, Terminal as TerminalIcon, Wand2, Zap } from 'lucide-vue-next'
 import type { Component, InjectionKey } from 'vue'
 
 export type PresetCategory = 'retro' | 'aesthetic' | 'effects'
-export type ShapeValue = 'rect' | 'round-rect' | 'circle' | 'ring' | 'diamond' | 'triangle' | 'triangle-alt' | 'hexagon' | 'pentagon' | 'pentagon-alt' | 'star' | 'star-alt' | 'cross' | 'cross-alt' | 'x' | 'asterisk' | 'hash' | 'heart' | 'heart-alt'
+export type ShapeValue = 'rect' | 'round-rect' | 'circle' | 'ring' | 'diamond' | 'triangle' | 'hexagon' | 'pentagon' | 'star' | 'cross' | 'x' | 'asterisk' | 'hash' | 'heart' | 'crescent' | 'leaf' | 'pacman' | 'bowtie' | 'arrow' | 'flower' | 'bacon'
 
 export type PresetDef = {
   label: string
@@ -11,7 +11,6 @@ export type PresetDef = {
   icon?: Component
   pixel?: number
   pixelAuto?: boolean
-  autoPixelDensity?: number
   shape?: ShapeValue
   palette?: string
   dither?: boolean
@@ -44,76 +43,78 @@ export type HistoryItem = {
   ansiText: string | null
   filename: string
   label: string
+  fileSize: number | null
 }
 
 export const presets: PresetDef[] = [
   // Retro (main)
-  { label: 'Game Boy', category: 'retro', icon: Smartphone, pixelAuto: true, autoPixelDensity: 20, shape: 'rect', palette: 'gb', greyscale: true, dither: true },
-  { label: 'Game Boy Color', category: 'retro', icon: Smartphone, pixelAuto: true, autoPixelDensity: 22, shape: 'rect', palette: 'gbc' },
-  { label: 'NES', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 30, shape: 'rect', palette: 'nes' },
-  { label: 'SNES', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 35, shape: 'rect', palette: 'snes' },
-  { label: 'N64', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 40, shape: 'rect', palette: 'n64' },
-  { label: 'Genesis', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 38, shape: 'rect', palette: 'genesis' },
-  { label: 'Atari', category: 'retro', icon: Joystick, pixelAuto: true, autoPixelDensity: 18, shape: 'rect', palette: 'atari' },
-  { label: 'C64', category: 'retro', icon: TerminalIcon, pixelAuto: true, autoPixelDensity: 28, shape: 'rect', palette: 'c64' },
-  { label: 'PICO-8', category: 'retro', icon: Code, pixelAuto: true, autoPixelDensity: 16, shape: 'rect', palette: 'pico8' },
-  { label: 'CGA', category: 'retro', icon: Monitor, pixelAuto: true, autoPixelDensity: 32, shape: 'rect', palette: 'cga' },
+  { label: 'Game Boy', category: 'retro', icon: Smartphone, pixelAuto: true, shape: 'rect', palette: 'gb', greyscale: true, dither: true },
+  { label: 'Game Boy Color', category: 'retro', icon: Smartphone, pixelAuto: true, shape: 'rect', palette: 'gbc' },
+  { label: 'NES', category: 'retro', icon: Gamepad2, pixelAuto: true, shape: 'rect', palette: 'nes' },
+  { label: 'SNES', category: 'retro', icon: Gamepad2, pixelAuto: true, shape: 'rect', palette: 'snes' },
+  { label: 'N64', category: 'retro', icon: Gamepad2, pixelAuto: true, shape: 'rect', palette: 'n64' },
+  { label: 'Genesis', category: 'retro', icon: Gamepad2, pixelAuto: true, shape: 'rect', palette: 'genesis' },
+  { label: 'Atari', category: 'retro', icon: Joystick, pixelAuto: true, shape: 'rect', palette: 'atari' },
+  { label: 'C64', category: 'retro', icon: TerminalIcon, pixelAuto: true, shape: 'rect', palette: 'c64' },
+  { label: 'PICO-8', category: 'retro', icon: Code, pixelAuto: true, shape: 'rect', palette: 'pico8' },
+  { label: 'CGA', category: 'retro', icon: Monitor, pixelAuto: true, shape: 'rect', palette: 'cga' },
   // Retro (extended)
-  { label: 'Game Boy Pocket', category: 'retro', icon: Smartphone, pixelAuto: true, autoPixelDensity: 20, shape: 'rect', palette: 'gbp', greyscale: true, dither: true },
-  { label: 'Game Boy Advance', category: 'retro', icon: Smartphone, pixelAuto: true, autoPixelDensity: 24, shape: 'rect', palette: 'gba' },
-  { label: 'Virtual Boy', category: 'retro', icon: Glasses, pixelAuto: true, autoPixelDensity: 38, shape: 'rect', palette: 'vb', greyscale: true },
-  { label: 'Master System', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 30, shape: 'rect', palette: 'sms' },
-  { label: 'Game Gear', category: 'retro', icon: Smartphone, pixelAuto: true, autoPixelDensity: 20, shape: 'rect', palette: 'gg' },
-  { label: 'TurboGrafx-16', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 35, shape: 'rect', palette: 'tg16' },
-  { label: 'Neo Geo', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 38, shape: 'rect', palette: 'neogeo' },
-  { label: 'PS1', category: 'retro', icon: Gamepad2, pixelAuto: true, autoPixelDensity: 40, shape: 'rect', palette: 'ps1' },
-  { label: 'MSX', category: 'retro', icon: TerminalIcon, pixelAuto: true, autoPixelDensity: 28, shape: 'rect', palette: 'msx' },
-  { label: 'ZX Spectrum', category: 'retro', icon: TerminalIcon, pixelAuto: true, autoPixelDensity: 28, shape: 'rect', palette: 'zxspectrum' },
-  { label: 'Amstrad', category: 'retro', icon: TerminalIcon, pixelAuto: true, autoPixelDensity: 30, shape: 'rect', palette: 'amstrad' },
-  { label: 'Amiga', category: 'retro', icon: TerminalIcon, pixelAuto: true, autoPixelDensity: 36, shape: 'rect', palette: 'amiga' },
-  { label: 'Apple II', category: 'retro', icon: TerminalIcon, pixelAuto: true, autoPixelDensity: 26, shape: 'rect', palette: 'apple2' },
-  { label: 'EGA', category: 'retro', icon: Monitor, pixelAuto: true, autoPixelDensity: 32, shape: 'rect', palette: 'ega' },
+  { label: 'Game Boy Pocket', category: 'retro', icon: Smartphone, pixelAuto: true, shape: 'rect', palette: 'gbp', greyscale: true, dither: true },
+  { label: 'Game Boy Advance', category: 'retro', icon: Smartphone, pixelAuto: true, shape: 'rect', palette: 'gba' },
+  { label: 'Virtual Boy', category: 'retro', icon: Glasses, pixelAuto: true, shape: 'rect', palette: 'vb', greyscale: true },
+  { label: 'Master System', category: 'retro', icon: Gamepad2, pixelAuto: true, shape: 'rect', palette: 'sms' },
+  { label: 'Game Gear', category: 'retro', icon: Smartphone, pixelAuto: true, shape: 'rect', palette: 'gg' },
+  { label: 'TurboGrafx-16', category: 'retro', icon: Gamepad2, pixelAuto: true, shape: 'rect', palette: 'tg16' },
+  { label: 'Neo Geo', category: 'retro', icon: Gamepad2, pixelAuto: true, shape: 'rect', palette: 'neogeo' },
+  { label: 'PS1', category: 'retro', icon: Gamepad2, pixelAuto: true, shape: 'rect', palette: 'ps1' },
+  { label: 'MSX', category: 'retro', icon: TerminalIcon, pixelAuto: true, shape: 'rect', palette: 'msx' },
+  { label: 'ZX Spectrum', category: 'retro', icon: TerminalIcon, pixelAuto: true, shape: 'rect', palette: 'zxspectrum' },
+  { label: 'Amstrad', category: 'retro', icon: TerminalIcon, pixelAuto: true, shape: 'rect', palette: 'amstrad' },
+  { label: 'Amiga', category: 'retro', icon: TerminalIcon, pixelAuto: true, shape: 'rect', palette: 'amiga' },
+  { label: 'Apple II', category: 'retro', icon: TerminalIcon, pixelAuto: true, shape: 'rect', palette: 'apple2' },
+  { label: 'EGA', category: 'retro', icon: Monitor, pixelAuto: true, shape: 'rect', palette: 'ega' },
   // Aesthetic
-  { label: 'Vaporwave', category: 'aesthetic', pixelAuto: true, shape: 'circle', palette: 'vaporwave', gap: 1 },
-  { label: 'Noir', category: 'aesthetic', pixelAuto: true, shape: 'rect', greyscale: true, contrast: 1.3, brightness: 0.85 },
-  { label: 'Sepia', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'sepia' },
-  { label: 'Neon', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'neon' },
-  { label: 'Pastel', category: 'aesthetic', pixelAuto: true, shape: 'circle', palette: 'pastel', gap: 1 },
-  { label: 'Ocean', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'ocean' },
-  { label: 'Sunset', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'sunset' },
-  { label: 'Dracula', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'dracula' },
-  { label: 'Nord', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'nord' },
-  { label: 'Terminal', category: 'aesthetic', pixel: 4, shape: 'rect', palette: 'terminal', scanlines: 1 },
   { label: 'Amber', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'amber', greyscale: true },
+  { label: 'Dracula', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'dracula' },
   { label: 'Forest', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'forest' },
   { label: 'Lava', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'lava' },
-  { label: 'Sakura', category: 'aesthetic', pixelAuto: true, shape: 'circle', palette: 'sakura', gap: 1 },
-  { label: 'Rainbow', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'rainbow' },
   { label: 'Mono', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'mono', greyscale: true },
+  { label: 'Neon', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'neon' },
+  { label: 'Noir', category: 'aesthetic', pixelAuto: true, shape: 'rect', greyscale: true, contrast: 1.3, brightness: 0.85 },
+  { label: 'Nord', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'nord' },
+  { label: 'Ocean', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'ocean' },
+  { label: 'Pastel', category: 'aesthetic', pixelAuto: true, shape: 'circle', palette: 'pastel', gap: 1 },
+  { label: 'Rainbow', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'rainbow' },
+  { label: 'Sakura', category: 'aesthetic', pixelAuto: true, shape: 'circle', palette: 'sakura', gap: 1 },
+  { label: 'Sepia', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'sepia' },
+  { label: 'Sunset', category: 'aesthetic', pixelAuto: true, shape: 'rect', palette: 'sunset' },
+  { label: 'Terminal', category: 'aesthetic', pixel: 4, shape: 'rect', palette: 'terminal', scanlines: 1 },
+  { label: 'Vaporwave', category: 'aesthetic', pixelAuto: true, shape: 'circle', palette: 'vaporwave', gap: 1 },
   // Effects
-  { label: 'Cartoon', category: 'effects', icon: Wand2, pixelAuto: true, autoPixelDensity: 50, saturation: 2.5, colorCount: 6, contrast: 1.4 },
-  { label: 'Posterize', category: 'effects', icon: Palette, pixelAuto: true, autoPixelDensity: 60, palette: 'nes', saturation: 1.5, remap: 0.8, contrast: 1.1 },
-  { label: 'Pixel Art', category: 'effects', icon: Square, pixel: 16, shape: 'rect' },
-  { label: 'Halftone', category: 'effects', icon: Circle, pixelAuto: true, shape: 'circle', gap: 2 },
-  { label: 'Mosaic', category: 'effects', icon: LayoutGrid, pixel: 20, shape: 'round-rect', gap: 3 },
-  { label: 'Cross-Stitch', category: 'effects', icon: Hash, pixel: 12, shape: 'cross-alt', gap: 2 },
-  { label: 'Honeycomb', category: 'effects', icon: Hexagon, pixelAuto: true, shape: 'hexagon', gap: 2 },
+  { label: 'Bacon', category: 'effects', icon: Flame, pixelAuto: true, shape: 'bacon', gap: 2, palette: 'lava' },
+  { label: 'Cartoon', category: 'effects', icon: Wand2, pixelAuto: true, saturation: 2.5, colorCount: 6, contrast: 1.4 },
+  { label: 'Cross-Stitch', category: 'effects', icon: Hash, pixel: 12, shape: 'cross', gap: 2 },
   { label: 'Diamond', category: 'effects', icon: Diamond, pixelAuto: true, shape: 'diamond', gap: 2 },
-  { label: 'Watercolor', category: 'effects', icon: Droplet, pixelAuto: true, shape: 'rect', palette: 'pastel', blur: 2 },
   { label: 'Glitch', category: 'effects', icon: Zap, pixelAuto: true, shape: 'rect', noise: 25, contrast: 1.1 },
-  { label: 'Retro CRT', category: 'effects', icon: Monitor, pixel: 4, shape: 'rect', palette: 'nes', scanlines: 2, contrast: 1.2 }
+  { label: 'Halftone', category: 'effects', icon: Circle, pixelAuto: true, shape: 'circle', gap: 2 },
+  { label: 'Honeycomb', category: 'effects', icon: Hexagon, pixelAuto: true, shape: 'hexagon', gap: 2 },
+  { label: 'Mosaic', category: 'effects', icon: LayoutGrid, pixel: 20, shape: 'round-rect', gap: 3 },
+  { label: 'Pixel Art', category: 'effects', icon: Square, pixel: 16, shape: 'rect' },
+  { label: 'Posterize', category: 'effects', icon: Palette, pixelAuto: true, palette: 'nes', saturation: 1.5, remap: 0.8, contrast: 1.1 },
+  { label: 'Retro CRT', category: 'effects', icon: Monitor, pixel: 4, shape: 'rect', palette: 'nes', scanlines: 2, contrast: 1.2 },
+  { label: 'Watercolor', category: 'effects', icon: Droplet, pixelAuto: true, shape: 'rect', palette: 'pastel', blur: 2 }
 ]
 
 export const moods: MoodDef[] = [
-  { label: 'Vivid', icon: Sparkles, saturation: 1.4, contrast: 1.15 },
+  { label: 'Cinematic', icon: Film, contrast: 1.3, saturation: 0.85, brightness: 0.9 },
+  { label: 'Cool', icon: Snowflake, hue: 15, saturation: 1.05 },
+  { label: 'Dark', icon: Moon, brightness: 0.7, contrast: 1.2 },
+  { label: 'Dreamy', icon: Star, brightness: 1.15, contrast: 0.8, saturation: 0.8 },
   { label: 'Faded', icon: Cloud, saturation: 0.5, brightness: 1.05, contrast: 0.85 },
   { label: 'High Contrast', icon: Contrast, contrast: 1.6, brightness: 0.95 },
   { label: 'Muted', icon: Feather, saturation: 0.7, contrast: 0.9 },
-  { label: 'Dark', icon: Moon, brightness: 0.7, contrast: 1.2 },
+  { label: 'Vivid', icon: Sparkles, saturation: 1.4, contrast: 1.15 },
   { label: 'Warm', icon: Sun, hue: -15, saturation: 1.1 },
-  { label: 'Cool', icon: Snowflake, hue: 15, saturation: 1.05 },
-  { label: 'Cinematic', icon: Film, contrast: 1.3, saturation: 0.85, brightness: 0.9 },
-  { label: 'Dreamy', icon: Star, brightness: 1.15, contrast: 0.8, saturation: 0.8 },
   { label: 'Washed', icon: Droplets, brightness: 1.2, contrast: 0.7, saturation: 0.5 }
 ]
 
@@ -159,11 +160,11 @@ export const moodActiveClass: Record<string, string> = {
 export const features = [
   {
     title: 'Shapes & effects',
-    description: 'Nineteen pixel shapes: rect, circle, star, heart, hexagon, and more. Add gaps, scanlines, and scale to any size.'
+    description: 'Twenty-one pixel shapes — rect, circle, star, heart, hexagon, flower, bacon, and more. Fine-tune with gap, jitter, wave, pulse, size variance, and brightness size.'
   },
   {
     title: 'Color tools',
-    description: 'Palettes, dithering, greyscale, invert, brightness, contrast, saturation, hue, noise, and color quantization.'
+    description: 'Palettes, dithering, greyscale, invert, brightness, contrast, saturation, hue, vibrancy, remap, noise, and color quantization.'
   },
   {
     title: 'CLI + library',
@@ -172,7 +173,6 @@ export const features = [
 ]
 
 export function createPixelateState() {
-  const fileInput = ref<HTMLInputElement | null>(null)
   const file = ref<File | null>(null)
   const previewUrl = ref<string | null>(null)
   const dragging = ref(false)
@@ -200,11 +200,19 @@ export function createPixelateState() {
   const scanlines = ref(0)
   const seed = ref('')
   const background = ref('')
+  const jitter = ref(0)
+  const sizeVariance = ref(0)
+  const pulse = ref(0)
+  const wave = ref(0)
+  const brightnessSize = ref(0)
+  const alt = ref(false)
+  const offset = ref(false)
 
   const processing = ref(false)
   const abortController = ref<AbortController | null>(null)
   const isPwa = ref(false)
   const error = ref<string | null>(null)
+  const autoUpdate = ref(true)
 
   const activePreset = ref('')
   const presetCategory = ref<PresetCategory>('retro')
@@ -254,6 +262,11 @@ export function createPixelateState() {
     if (noise.value > 0) n++
     if (colorCount.value !== '') n++
     if (scanlines.value > 0) n++
+    if (jitter.value > 0) n++
+    if (sizeVariance.value > 0) n++
+    if (pulse.value > 0) n++
+    if (wave.value > 0) n++
+    if (brightnessSize.value > 0) n++
     return n
   })
 
@@ -336,13 +349,18 @@ export function createPixelateState() {
     activeItem.value = null
   }
 
-  const clearAll = () => {
-    clearHistory()
+  const clearImage = () => {
+    activeItem.value = null
     error.value = null
     if (previewUrl.value) URL.revokeObjectURL(previewUrl.value)
     previewUrl.value = null
     file.value = null
-    if (fileInput.value) fileInput.value.value = ''
+  }
+
+  const clearAll = () => {
+    clearHistory()
+    resetOptions()
+    clearImage()
   }
 
   const resetOptions = () => {
@@ -372,11 +390,19 @@ export function createPixelateState() {
     scanlines.value = 0
     seed.value = ''
     background.value = ''
+    jitter.value = 0
+    sizeVariance.value = 0
+    pulse.value = 0
+    wave.value = 0
+    brightnessSize.value = 0
+    alt.value = false
+    offset.value = false
   }
 
   let autoProcessTimer: ReturnType<typeof setTimeout> | null = null
   const triggerAutoProcess = () => {
     if (!file.value) return
+    if (!autoUpdate.value) return
     if (autoProcessTimer) clearTimeout(autoProcessTimer)
     autoProcessTimer = setTimeout(() => {
       autoProcessTimer = null
@@ -384,7 +410,7 @@ export function createPixelateState() {
     }, 350)
   }
 
-  watch([pixelSize, pixelAuto, autoPixelDensity, format, palette, dither, greyscale, invert, blur, brightness, contrast, saturation, hue, vibrancy, remap, noise, colorCount, shape, gap, scale, scanlines, seed, background], () => {
+  watch([pixelSize, pixelAuto, autoPixelDensity, format, palette, dither, greyscale, invert, blur, brightness, contrast, saturation, hue, vibrancy, remap, noise, colorCount, shape, gap, scale, scanlines, seed, background, jitter, sizeVariance, pulse, wave, brightnessSize, alt, offset], () => {
     triggerAutoProcess()
   })
 
@@ -409,12 +435,26 @@ export function createPixelateState() {
   const applyPreset = (preset: PresetDef) => {
     const prevMood = activeMood.value ? moods.find((m) => m.label === activeMood.value) : null
     const prevShowAdj = showAdjustments.value
+    if (activePreset.value === preset.label) {
+      resetOptions()
+      showAdjustments.value = prevShowAdj
+      if (prevMood) {
+        activeMood.value = prevMood.label
+        brightness.value = prevMood.brightness ?? 1
+        contrast.value = prevMood.contrast ?? 1
+        saturation.value = prevMood.saturation ?? 1
+        hue.value = prevMood.hue ?? 0
+      }
+      triggerAutoProcess()
+      return
+    }
+    const prevAutoPixelDensity = autoPixelDensity.value
     resetOptions()
+    autoPixelDensity.value = prevAutoPixelDensity
     showAdjustments.value = prevShowAdj
     activePreset.value = preset.label
     if (preset.pixel !== undefined) pixelSize.value = preset.pixel
     if (preset.pixelAuto !== undefined) pixelAuto.value = preset.pixelAuto
-    if (preset.autoPixelDensity !== undefined) autoPixelDensity.value = preset.autoPixelDensity
     if (preset.shape !== undefined) shape.value = preset.shape
     if (preset.palette !== undefined) palette.value = preset.palette
     if (preset.dither !== undefined) dither.value = preset.dither
@@ -446,7 +486,7 @@ export function createPixelateState() {
     file.value = f
     previewUrl.value = URL.createObjectURL(f)
     error.value = null
-    triggerAutoProcess()
+    process()
   }
 
   const handleDrop = (e: DragEvent) => {
@@ -507,6 +547,13 @@ export function createPixelateState() {
     if (scanlines.value > 0) form.append('scanlines', String(scanlines.value))
     if (seed.value !== '') form.append('seed', seed.value)
     if (background.value && hasBackground.value) form.append('background', background.value)
+    if (jitter.value > 0) form.append('jitter', String(jitter.value))
+    if (sizeVariance.value > 0) form.append('sizeVariance', String(sizeVariance.value))
+    if (pulse.value > 0) form.append('pulse', String(pulse.value))
+    if (wave.value > 0) form.append('wave', String(wave.value))
+    if (brightnessSize.value > 0) form.append('brightnessSize', String(brightnessSize.value))
+    if (alt.value) form.append('alt', 'true')
+    if (offset.value) form.append('offset', 'true')
 
     try {
       const res = await fetch('/api/pixelate', { method: 'POST', body: form, signal: controller.signal })
@@ -522,20 +569,34 @@ export function createPixelateState() {
 
       if (controller.signal.aborted) return
 
-      const label = `${activePreset.value ? activePreset.value + ' · ' : ''}${activeMood.value ? activeMood.value + ' · ' : ''}${pixelAuto.value ? 'auto' : pixelSize.value + 'px'} · ${format.value.toUpperCase()}`
+      const resolvedPixel = pixelAuto.value ? (autoPixelResolved.value ?? pixelSize.value) : pixelSize.value
+      const shapeLabel = shape.value.charAt(0).toUpperCase() + shape.value.slice(1)
+      const label = `${activeMood.value ? activeMood.value + ' · ' : ''}${activePreset.value ? activePreset.value + ' · ' : ''}${resolvedPixel}px · ${shapeLabel}`
       let url: string | null = null
       let ansi: string | null = null
 
+      let fileSize: number | null = null
       if (data.mimeType === 'text/plain') {
         ansi = atob(data.data)
+        fileSize = ansi.length
       } else {
         const byteStr = atob(data.data)
         const bytes = new Uint8Array(byteStr.length)
         for (let i = 0; i < byteStr.length; i++) bytes[i] = byteStr.charCodeAt(i)
+        fileSize = bytes.length
         url = URL.createObjectURL(new Blob([bytes], { type: data.mimeType }))
       }
 
-      const item: HistoryItem = { url, ansiText: ansi, filename: data.filename, label }
+      if (url) {
+        await new Promise<void>((resolve) => {
+          const img = new Image()
+          img.onload = () => resolve()
+          img.onerror = () => resolve()
+          img.src = url
+        })
+      }
+      if (controller.signal.aborted) return
+      const item: HistoryItem = { url, ansiText: ansi, filename: data.filename, label, fileSize }
       history.value.unshift(item)
       activeItem.value = item
     } catch (err) {
@@ -558,6 +619,8 @@ export function createPixelateState() {
   }
 
   onMounted(() => {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+    window.scrollTo(0, 0)
     isPwa.value = window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true
     document.addEventListener('paste', handlePaste)
     const splash = document.getElementById('splash')
@@ -575,8 +638,15 @@ export function createPixelateState() {
     }
   })
 
+  const randomize = () => {
+    const randomPreset = presets[Math.floor(Math.random() * presets.length)]
+    const randomMood = moods[Math.floor(Math.random() * moods.length)]
+    applyPreset(randomPreset)
+    applyMood(randomMood)
+    presetCategory.value = randomPreset.category
+  }
+
   return {
-    fileInput,
     file,
     previewUrl,
     dragging,
@@ -607,6 +677,13 @@ export function createPixelateState() {
     scanlines,
     seed,
     background,
+    jitter,
+    sizeVariance,
+    pulse,
+    wave,
+    brightnessSize,
+    alt,
+    offset,
     isAnsi,
     hasBackground,
     activeAdjustmentCount,
@@ -614,6 +691,7 @@ export function createPixelateState() {
     processing,
     isPwa,
     error,
+    autoUpdate,
     presetCategory,
     showAllRetro,
     filteredPresets,
@@ -627,8 +705,10 @@ export function createPixelateState() {
     handleColorCountChange,
     history,
     activeItem,
+    clearImage,
     clearHistory,
     clearAll,
+    randomize,
     loadHistoryItem: (item: HistoryItem) => {
       activeItem.value = item
     },

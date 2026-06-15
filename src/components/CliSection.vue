@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isPwa" class="mt-24 pt-12 border-t border-gray-200 dark:border-zinc-800">
+  <div v-if="!isPwa" class="mt-12 pt-12 border-t border-gray-200 dark:border-zinc-800">
     <h2 class="text-2xl font-semibold mb-8 text-center">Also available as a CLI</h2>
 
     <div class="grid sm:grid-cols-2 gap-4 mb-8">
@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl p-5 mb-10 font-mono text-sm text-gray-700 dark:text-zinc-300 leading-7 shadow-sm dark:shadow-none">
+    <div class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl p-5 font-mono text-sm text-gray-700 dark:text-zinc-300 leading-7 shadow-sm dark:shadow-none">
       <p><span class="text-violet-500 dark:text-violet-400">--pixel</span> <span class="text-gray-400 dark:text-zinc-500">n|nxn|auto</span> Pixel block size (default: 20)</p>
       <p><span class="text-violet-500 dark:text-violet-400">--autoPixelDensity</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Divisor for auto pixel size (default: 50)</p>
       <p><span class="text-violet-500 dark:text-violet-400">--format</span> <span class="text-gray-400 dark:text-zinc-500">png|jpeg|webp|avif|svg|ansi</span> Output format (default: png)</p>
@@ -30,26 +30,26 @@
       <p><span class="text-violet-500 dark:text-violet-400">--remap</span> <span class="text-gray-400 dark:text-zinc-500">0-1</span> Pre-shift pixels toward palette colors before pixelating (requires --palette)</p>
       <p><span class="text-violet-500 dark:text-violet-400">--noise</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Random color noise amount</p>
       <p><span class="text-violet-500 dark:text-violet-400">--colorCount</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Quantize output to n colors</p>
-      <p><span class="text-violet-500 dark:text-violet-400">--shape</span> <span class="text-gray-400 dark:text-zinc-500 break-all">rect|round-rect|circle|ring|diamond|triangle|triangle-alt|hexagon|pentagon|pentagon-alt|star|star-alt|cross|cross-alt|x|asterisk|hash|heart|heart-alt</span> Pixel shape (default: rect)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--shape</span> <span class="text-gray-400 dark:text-zinc-500 break-all">rect|round-rect|circle|ring|diamond|triangle|hexagon|pentagon|star|cross|x|asterisk|hash|heart|crescent|leaf|pacman|bowtie|arrow|flower|bacon</span> Pixel shape (default: rect)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--alt</span> Alternate shape orientation on a checkerboard</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--offset</span> Offset every other row by half a block width</p>
       <p><span class="text-violet-500 dark:text-violet-400">--gap</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Gap between pixels in px (default: 0)</p>
       <p><span class="text-violet-500 dark:text-violet-400">--scale</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Output scale multiplier (default: 1)</p>
       <p><span class="text-violet-500 dark:text-violet-400">--scanlines</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Scanline gap height in px</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--jitter</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Random positional offset per pixel (0–20)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--sizeVariance</span> <span class="text-gray-400 dark:text-zinc-500">0–1</span> Random size variation per pixel shape</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--pulse</span> <span class="text-gray-400 dark:text-zinc-500">0–1</span> Radial size scaling from image center</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--wave</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Sine wave position distortion (0–20)</p>
+      <p><span class="text-violet-500 dark:text-violet-400">--brightnessSize</span> <span class="text-gray-400 dark:text-zinc-500">0–1</span> Scale pixel size by brightness</p>
       <p><span class="text-violet-500 dark:text-violet-400">--background</span> <span class="text-gray-400 dark:text-zinc-500">#rrggbb</span> Background fill color</p>
       <p><span class="text-violet-500 dark:text-violet-400">--seed</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Seed for deterministic noise</p>
       <p><span class="text-violet-500 dark:text-violet-400">--output</span> <span class="text-gray-400 dark:text-zinc-500">path</span> Output file path</p>
-    </div>
-
-    <div class="grid sm:grid-cols-3 gap-4">
-      <div v-for="feature in features" :key="feature.title" class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm dark:shadow-none">
-        <h3 class="font-semibold mb-1.5">{{ feature.title }}</h3>
-        <p class="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed">{{ feature.description }}</p>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { features, usePixelate } from '@/composables/usePixelate'
+import { usePixelate } from '@/composables/usePixelate'
 
 const { isPwa } = usePixelate()
 </script>
