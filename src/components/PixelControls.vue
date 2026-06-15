@@ -100,7 +100,6 @@
         {{ processing ? 'Processing…' : 'Pixelate' }}
       </button>
     </div>
-
   </div>
 </template>
 

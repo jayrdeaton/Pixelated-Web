@@ -53,7 +53,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { createPixelateState, PIXELATE_KEY, features } from '@/composables/usePixelate'
+
+import { createPixelateState, features, PIXELATE_KEY } from '@/composables/usePixelate'
 
 const state = createPixelateState()
 provide(PIXELATE_KEY, state)
