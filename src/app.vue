@@ -1,9 +1,5 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 flex flex-col transition-colors duration-200">
-    <div id="splash" style="position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.25s">
-      <img src="/icon-180.png" style="width: 80px; height: 80px; border-radius: 18px" alt="" />
-    </div>
-
     <AppHeader />
 
     <main class="flex-1 max-w-3xl lg:max-w-5xl mx-auto w-full px-6 py-14">

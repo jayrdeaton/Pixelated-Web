@@ -623,11 +623,6 @@ export function createPixelateState() {
     window.scrollTo(0, 0)
     isPwa.value = window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true
     document.addEventListener('paste', handlePaste)
-    const splash = document.getElementById('splash')
-    if (splash) {
-      splash.style.opacity = '0'
-      setTimeout(() => splash.remove(), 250)
-    }
   })
 
   onUnmounted(() => {
