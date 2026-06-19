@@ -30,10 +30,6 @@
         </div>
       </div>
     </div>
-
-    <div v-if="!activeItem && !error" class="flex flex-1 border-2 border-dashed border-gray-200 dark:border-zinc-700 rounded-xl p-8 items-center justify-center text-center">
-      <p class="text-sm text-gray-400 dark:text-zinc-500">Pixelating...</p>
-    </div>
   </div>
 
   <Teleport to="body">
