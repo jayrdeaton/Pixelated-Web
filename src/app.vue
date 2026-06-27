@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 flex flex-col transition-colors duration-200">
+  <div class="min-h-dvh bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 flex flex-col" :class="{ 'transition-colors duration-200': mounted }">
     <AppHeader />
 
     <main class="flex-1 max-w-3xl lg:max-w-5xl mx-auto w-full px-6 py-14">
@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import { createPixelateState, features, PIXELATE_KEY } from '@/composables/usePixelate'
 
@@ -56,4 +56,9 @@ const state = createPixelateState()
 provide(PIXELATE_KEY, state)
 const { clearImage, resetOptions, activeItem, processing, isPwa } = state
 const showResult = computed(() => !!(activeItem.value || processing.value))
+
+const mounted = ref(false)
+onMounted(() => {
+  mounted.value = true
+})
 </script>
