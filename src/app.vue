@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-dvh bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 flex flex-col" :class="{ 'transition-colors duration-200': mounted }">
+  <div class="min-h-screen bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 flex flex-col" :class="{ 'transition-colors duration-200': mounted }">
     <AppHeader />
 
     <main class="flex-1 max-w-3xl lg:max-w-5xl mx-auto w-full px-6 py-14">
@@ -60,5 +60,6 @@ const showResult = computed(() => !!(activeItem.value || processing.value))
 const mounted = ref(false)
 onMounted(() => {
   mounted.value = true
+  window.scrollTo(0, 0)
 })
 </script>
