@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+* {
+  touch-action: manipulation;
+}
+
 html {
   font-family:
     -apple-system,
@@ -10,7 +14,15 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(249 250 251);
+  color-scheme: light;
   height: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    background-color: rgb(9 9 11);
+    color-scheme: dark;
+  }
 }
 
 html.dark {

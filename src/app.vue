@@ -1,10 +1,12 @@
 <template>
+  <div class="fixed inset-x-0 top-0 z-50 bg-gray-50 dark:bg-zinc-950" style="height: env(safe-area-inset-top)" aria-hidden="true" />
+  <div class="fixed inset-x-0 bottom-0 z-50 bg-gray-50 dark:bg-zinc-950" style="height: env(safe-area-inset-bottom)" aria-hidden="true" />
   <div class="min-h-screen bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 flex flex-col" :class="{ 'transition-colors duration-200': mounted }">
     <AppHeader />
 
-    <main class="flex-1 max-w-3xl lg:max-w-5xl mx-auto w-full px-6 py-14">
+    <main class="flex-1 max-w-3xl lg:max-w-5xl mx-auto w-full px-6 pt-10 pb-14">
       <div class="mb-10 text-center">
-        <h1 class="text-4xl font-bold tracking-tight mb-3">Pixelate your images.</h1>
+        <h1 class="text-4xl font-bold tracking-tight mb-3">Pixelate your images</h1>
         <p class="text-gray-500 dark:text-zinc-400 text-lg leading-relaxed">Upload an image, choose your settings, and download your pixelated image in seconds.</p>
       </div>
 
