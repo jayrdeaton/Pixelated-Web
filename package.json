@@ -2,7 +2,7 @@
   "name": "pixelated-web",
   "displayName": "Pixelated",
   "private": true,
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Pixelate your images online. Choose shapes, palettes, and effects.",
   "author": "Jay Deaton",
   "license": "MIT",
