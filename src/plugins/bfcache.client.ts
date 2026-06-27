@@ -1,8 +1,4 @@
 export default defineNuxtPlugin(() => {
-  if ('scrollRestoration' in window.history) {
-    window.history.scrollRestoration = 'manual'
-  }
-
   window.addEventListener('pageshow', (e) => {
     if (e.persisted) window.location.reload()
   })

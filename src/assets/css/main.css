@@ -10,6 +10,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(249 250 251);
+  height: 100%;
 }
 
 html.dark {
@@ -17,9 +18,17 @@ html.dark {
   color-scheme: dark;
 }
 
-body,
+body {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  overflow: hidden;
+  background-color: transparent;
+}
+
 #__nuxt {
-  min-height: 100vh;
+  height: 100%;
+  overflow-y: auto;
   background-color: transparent;
 }
 

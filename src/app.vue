@@ -60,6 +60,5 @@ const showResult = computed(() => !!(activeItem.value || processing.value))
 const mounted = ref(false)
 onMounted(() => {
   mounted.value = true
-  window.scrollTo(0, 0)
 })
 </script>
