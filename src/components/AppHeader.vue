@@ -1,5 +1,5 @@
 <template>
-  <header class="border-b border-gray-200 dark:border-zinc-800 px-6 pb-4 flex-shrink-0" style="padding-top: calc(1rem + env(safe-area-inset-top))">
+  <header class="relative z-40 bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 px-6 pb-4 shrink-0" style="padding-top: calc(1rem + env(safe-area-inset-top))">
     <div class="max-w-3xl lg:max-w-5xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-2">
         <img src="/icon.svg" alt="Pixelated" class="w-6 h-6" />

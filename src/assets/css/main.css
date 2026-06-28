@@ -13,34 +13,34 @@ html {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: rgb(249 250 251);
+  background-color: rgb(255 255 255);
   color-scheme: light;
   height: 100%;
 }
 
 @media (prefers-color-scheme: dark) {
   html {
-    background-color: rgb(9 9 11);
+    background-color: rgb(24 24 27);
     color-scheme: dark;
   }
 }
 
 html.dark {
-  background-color: rgb(9 9 11);
+  background-color: rgb(24 24 27);
   color-scheme: dark;
 }
 
 body {
   height: 100%;
   width: 100%;
-  position: fixed;
   overflow: hidden;
   background-color: transparent;
 }
 
 #__nuxt {
-  height: 100%;
+  height: calc(100% + env(safe-area-inset-bottom));
   overflow-y: auto;
+  overscroll-behavior: none;
   background-color: transparent;
 }
 
@@ -49,5 +49,11 @@ body {
   input,
   select {
     font-size: 16px !important;
+  }
+}
+
+@media (display-mode: standalone) {
+  .pwa-footer {
+    display: none;
   }
 }

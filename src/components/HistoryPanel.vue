@@ -1,11 +1,11 @@
 <template>
-  <div v-if="history.length > 0" class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm dark:shadow-none mb-6">
+  <div v-if="history.length > 0" class="mt-6 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm dark:shadow-none mb-6">
     <div class="flex items-center justify-between mb-3">
       <h3 class="text-sm font-medium text-gray-500 dark:text-zinc-400">History</h3>
       <button class="text-sm text-gray-400 dark:text-zinc-500 hover:text-red-500 dark:hover:text-red-400 transition-colors" @click="clearHistory">Clear</button>
     </div>
     <div class="flex gap-3 overflow-x-auto pb-2 px-3 pt-3 -mx-3 bg-gray-50 dark:bg-zinc-950 rounded-xl">
-      <div v-for="(item, i) in history" :key="i" class="flex-shrink-0 bg-white dark:bg-zinc-900 border-2 border-gray-200 dark:border-zinc-800 rounded-xl p-3 flex flex-col items-center gap-2 w-36 shadow-sm dark:shadow-none cursor-pointer transition-all duration-150 hover:shadow-md hover:scale-[1.03] hover:border-violet-400 dark:hover:border-violet-500" @click="downloadItem(item)">
+      <div v-for="(item, i) in history" :key="i" class="shrink-0 bg-white dark:bg-zinc-900 border-2 border-gray-200 dark:border-zinc-800 rounded-xl p-3 flex flex-col items-center gap-2 w-36 shadow-sm dark:shadow-none cursor-pointer transition-all duration-150 hover:shadow-md hover:scale-[1.03] hover:border-violet-400 dark:hover:border-violet-500" @click="downloadItem(item)">
         <div class="w-28 h-28 flex items-center justify-center overflow-hidden rounded-lg cursor-zoom-in" @click.stop="onImageClick(item)">
           <img v-if="item.url" :src="item.url" class="max-w-full max-h-full object-contain" alt="" />
           <span v-else class="text-xs font-mono text-emerald-400">ANSI</span>
