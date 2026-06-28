@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isPwa" class="mt-12 pt-12 border-t border-gray-200 dark:border-zinc-800">
+  <div v-if="isMounted && !isPwa" class="mt-12 pt-12 border-t border-gray-200 dark:border-zinc-800">
     <h2 class="text-2xl font-semibold mb-8 text-center">Also available as a CLI</h2>
 
     <div class="grid sm:grid-cols-2 gap-4 mb-8">
@@ -49,5 +49,5 @@
 </template>
 
 <script setup lang="ts">
-const { isPwa } = usePwa()
+const { isPwa, isMounted } = usePwa()
 </script>

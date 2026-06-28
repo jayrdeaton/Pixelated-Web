@@ -34,7 +34,7 @@
 
       <HistoryPanel />
 
-      <div v-if="!isPwa" class="hidden sm:block mt-12 pt-12 border-t border-gray-200 dark:border-zinc-800">
+      <div v-if="isMounted && !isPwa" class="hidden sm:block mt-12 pt-12 border-t border-gray-200 dark:border-zinc-800">
         <div class="grid sm:grid-cols-3 gap-4">
           <div v-for="feature in features" :key="feature.title" class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm dark:shadow-none">
             <h3 class="font-semibold mb-1.5">{{ feature.title }}</h3>
@@ -60,7 +60,7 @@ import { createPixelateState, features, PIXELATE_KEY } from '@/composables/usePi
 const state = createPixelateState()
 provide(PIXELATE_KEY, state)
 const { clearImage, resetOptions, activeItem, processing } = state
-const { isPwa } = usePwa()
+const { isPwa, isMounted } = usePwa()
 const showResult = computed(() => !!(activeItem.value || processing.value))
 
 const mounted = ref(false)
