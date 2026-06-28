@@ -59,7 +59,8 @@ import { createPixelateState, features, PIXELATE_KEY } from '@/composables/usePi
 
 const state = createPixelateState()
 provide(PIXELATE_KEY, state)
-const { clearImage, resetOptions, activeItem, processing, isPwa } = state
+const { clearImage, resetOptions, activeItem, processing } = state
+const { isPwa } = usePwa()
 const showResult = computed(() => !!(activeItem.value || processing.value))
 
 const mounted = ref(false)

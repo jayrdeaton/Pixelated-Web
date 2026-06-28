@@ -49,7 +49,5 @@
 </template>
 
 <script setup lang="ts">
-import { usePixelate } from '@/composables/usePixelate'
-
-const { isPwa } = usePixelate()
+const { isPwa } = usePwa()
 </script>

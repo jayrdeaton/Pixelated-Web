@@ -210,7 +210,6 @@ export function createPixelateState() {
 
   const processing = ref(false)
   const abortController = ref<AbortController | null>(null)
-  const isPwa = ref(false)
   const error = ref<string | null>(null)
   const autoUpdate = ref(true)
 
@@ -621,7 +620,6 @@ export function createPixelateState() {
   onMounted(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
     window.scrollTo(0, 0)
-    isPwa.value = window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true
     document.addEventListener('paste', handlePaste)
   })
 
@@ -684,7 +682,6 @@ export function createPixelateState() {
     activeAdjustmentCount,
     showAdjustments,
     processing,
-    isPwa,
     error,
     autoUpdate,
     presetCategory,
