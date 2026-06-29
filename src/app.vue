@@ -2,10 +2,10 @@
   <div class="fixed inset-x-0 top-0 z-50 bg-white dark:bg-zinc-900" style="height: env(safe-area-inset-top)" aria-hidden="true" />
   <div class="fixed inset-x-0 z-30 bg-gray-200 dark:bg-zinc-800" style="top: env(safe-area-inset-top); height: 1px" aria-hidden="true" />
   <div class="fixed inset-x-0 bottom-0 z-30 bg-gray-200 dark:bg-zinc-800" style="height: 1px" aria-hidden="true" />
-  <div class="min-h-screen bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 flex flex-col" :class="{ 'transition-colors duration-200': mounted }">
+  <div class="min-h-dvh bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 flex flex-col" :class="{ 'transition-colors duration-200': mounted }">
     <AppHeader />
 
-    <main class="pwa-main flex-1 flex flex-col max-w-3xl lg:max-w-5xl mx-auto w-full px-6 pt-10 pb-6">
+    <main class="pwa-main flex-1 flex flex-col max-w-3xl lg:max-w-5xl mx-auto w-full px-6 pt-10 pb-10">
       <div class="mb-10 text-center">
         <h1 class="text-4xl font-bold tracking-tight mb-3">Pixelate your images</h1>
         <p class="text-gray-500 dark:text-zinc-400 text-lg leading-relaxed">Upload an image, choose your settings, and download your pixelated image in seconds.</p>
@@ -34,7 +34,8 @@
 
       <HistoryPanel />
 
-      <div v-if="isMounted && !isPwa" class="hidden sm:block mt-12 pt-12 border-t border-gray-200 dark:border-zinc-800">
+      <div v-if="isMounted && !isPwa" class="mt-8 space-y-6">
+        <h2 class="text-lg font-semibold text-center text-gray-700 dark:text-zinc-200">How Pixelated works</h2>
         <div class="grid sm:grid-cols-3 gap-4">
           <div v-for="feature in features" :key="feature.title" class="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-xl p-5 shadow-sm dark:shadow-none">
             <h3 class="font-semibold mb-1.5">{{ feature.title }}</h3>
@@ -43,7 +44,8 @@
         </div>
       </div>
 
-      <div class="hidden sm:block">
+      <div v-if="isMounted && !isPwa" class="mt-8 space-y-6">
+        <h2 class="text-lg font-semibold text-center text-gray-700 dark:text-zinc-200">Command line</h2>
         <CliSection />
       </div>
     </main>

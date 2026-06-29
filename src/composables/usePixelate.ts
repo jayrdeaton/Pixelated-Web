@@ -160,7 +160,7 @@ export const moodActiveClass: Record<string, string> = {
 export const features = [
   {
     title: 'Shapes & effects',
-    description: 'Twenty-one pixel shapes — rect, circle, star, heart, hexagon, flower, bacon, and more. Fine-tune with gap, jitter, wave, pulse, size variance, and brightness size.'
+    description: '21 pixel shapes with fine-grained control over gap, jitter, wave, pulse, and more. Transparency is preserved, so you can pixelate a subject and keep the background gone.'
   },
   {
     title: 'Color tools',
