@@ -89,6 +89,7 @@ describe('POST /api/pixelate', () => {
         dither: false,
         greyscale: false,
         shape: 'rect',
+        aggregate: 'mean',
         gap: 0,
         scale: 1,
         palette: undefined
@@ -118,6 +119,22 @@ describe('POST /api/pixelate', () => {
     await (handler as any)(mockEvent)
 
     expect(vi.mocked(pixelated)).toHaveBeenCalledWith(expect.objectContaining({ palette: 'gameboy', dither: true }))
+  })
+
+  it('passes aggregate when set to median', async () => {
+    readMultipartFormData.mockResolvedValue([file(), field('aggregate', 'median')])
+
+    await (handler as any)(mockEvent)
+
+    expect(vi.mocked(pixelated)).toHaveBeenCalledWith(expect.objectContaining({ aggregate: 'median' }))
+  })
+
+  it('falls back to mean for an unrecognized aggregate value', async () => {
+    readMultipartFormData.mockResolvedValue([file(), field('aggregate', 'bogus')])
+
+    await (handler as any)(mockEvent)
+
+    expect(vi.mocked(pixelated)).toHaveBeenCalledWith(expect.objectContaining({ aggregate: 'mean' }))
   })
 
   it('cleans up temp files after successful processing', async () => {

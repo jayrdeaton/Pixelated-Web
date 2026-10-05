@@ -2,6 +2,14 @@
   <div v-show="showAdjustments" class="w-full flex flex-wrap gap-5 items-start">
     <span class="basis-full text-sm font-medium text-gray-500 dark:text-zinc-400 -mb-2">Color</span>
     <div>
+      <span :class="['flex items-center gap-1 text-sm font-medium mb-1.5', aggregate !== 'mean' ? 'text-violet-500 dark:text-violet-400' : 'text-gray-500 dark:text-zinc-400']">Aggregate<TooltipInfo text="How each block's color is computed from its source pixels. Median is more resistant to noise and outlier pixels than mean." /></span>
+      <div class="inline-flex items-stretch bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg overflow-hidden">
+        <button :class="aggregate === 'mean' ? 'bg-violet-500 text-white' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200'" class="px-3 py-2 text-sm font-medium transition-colors" @click="aggregate = 'mean'">Mean</button>
+        <div class="w-px bg-gray-200 dark:bg-zinc-700 shrink-0" />
+        <button :class="aggregate === 'median' ? 'bg-violet-500 text-white' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200'" class="px-3 py-2 text-sm font-medium transition-colors" @click="aggregate = 'median'">Median</button>
+      </div>
+    </div>
+    <div>
       <label for="brightness" :class="['flex items-center gap-1 text-sm font-medium mb-1.5', brightness !== 1 ? 'text-violet-500 dark:text-violet-400' : 'text-gray-500 dark:text-zinc-400']">Brightness<TooltipInfo text="Scales overall brightness. 1 = no change, 2 = twice as bright, 0.5 = half as bright." /></label>
       <input id="brightness" v-model.lazy.number="brightness" type="number" min="0.1" max="3" step="0.1" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 focus:outline-none focus:border-violet-500" @keydown.enter.prevent="($event.target as HTMLInputElement).blur()" />
     </div>
@@ -109,5 +117,5 @@
 <script setup lang="ts">
 import { usePixelate } from '@/composables/usePixelate'
 
-const { showAdjustments, palette, isAnsi, brightness, contrast, saturation, vibrancy, remap, hue, colorCount, greyscale, invert, blur, noise, seed, dither, scale, gap, scanlines, jitter, sizeVariance, pulse, wave, brightnessSize, handleColorCountChange } = usePixelate()
+const { showAdjustments, palette, isAnsi, brightness, contrast, saturation, vibrancy, remap, hue, colorCount, greyscale, invert, aggregate, blur, noise, seed, dither, scale, gap, scanlines, jitter, sizeVariance, pulse, wave, brightnessSize, handleColorCountChange } = usePixelate()
 </script>

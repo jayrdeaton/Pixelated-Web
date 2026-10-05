@@ -56,6 +56,7 @@ export default defineEventHandler(async (event) => {
   const greyscale = get('greyscale') === 'true'
   const invert = get('invert') === 'true'
   const shape = (get('shape') ?? 'rect') as PixelatedShape
+  const aggregate = get('aggregate') === 'median' ? 'median' : 'mean'
   const gap = clamp(parseInt(get('gap') ?? '0', 10), 0, 50)
   const scale = clamp(parseFloat(get('scale') ?? '1'), 0.1, 10)
   const background = get('background') || undefined
@@ -110,6 +111,7 @@ export default defineEventHandler(async (event) => {
       invert,
       blur,
       shape,
+      aggregate,
       alt,
       offset,
       gap,

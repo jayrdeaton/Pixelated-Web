@@ -16,40 +16,7 @@
             </template>
             <input v-else id="pixel-size" v-model.lazy.number="pixelSize" type="number" min="1" max="200" class="w-16 bg-transparent px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 focus:outline-none" @keydown.enter.prevent="($event.target as HTMLInputElement).blur()" />
           </div>
-          <ShapeIcon :shape="shape" :size="22" class="shrink-0 text-violet-500 dark:text-violet-400" />
-          <select id="shape" v-model="shape" :disabled="isAnsi" :class="isAnsi ? 'opacity-40' : ''" class="flex-1 min-w-0 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500 capitalize">
-            <optgroup label="Basic">
-              <option value="circle">Circle</option>
-              <option value="rect">Rect</option>
-              <option value="ring">Ring</option>
-              <option value="round-rect">Round Rect</option>
-            </optgroup>
-            <optgroup label="Geometric">
-              <option value="diamond">Diamond</option>
-              <option value="hexagon">Hexagon</option>
-              <option value="pentagon">Pentagon</option>
-              <option value="triangle">Triangle</option>
-            </optgroup>
-            <optgroup label="Stars &amp; Symbols">
-              <option value="asterisk">Asterisk</option>
-              <option value="cross">Cross</option>
-              <option value="hash">Hash</option>
-              <option value="heart">Heart</option>
-              <option value="star">Star</option>
-              <option value="x">X</option>
-            </optgroup>
-            <optgroup label="Organic">
-              <option value="crescent">Crescent</option>
-              <option value="flower">Flower</option>
-              <option value="leaf">Leaf</option>
-            </optgroup>
-            <optgroup label="Fun">
-              <option value="arrow">Arrow</option>
-              <option value="bacon">Bacon</option>
-              <option value="bowtie">Bowtie</option>
-              <option value="pacman">Pacman</option>
-            </optgroup>
-          </select>
+          <ShapePicker v-model="shape" :disabled="isAnsi" class="flex-1 min-w-32" />
           <div class="inline-flex items-stretch bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg overflow-hidden shrink-0" :class="isAnsi ? 'opacity-40' : ''">
             <button :disabled="isAnsi" :class="alt ? 'bg-violet-500 text-white' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200'" class="px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed" title="Alternate shape orientation on a checkerboard — e.g. alternating up/down triangles, + and × crosses, or 4-direction pacman." @click="!isAnsi && (alt = !alt)">Alt</button>
             <div class="w-px bg-gray-200 dark:bg-zinc-700 shrink-0" />

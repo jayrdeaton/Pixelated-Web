@@ -3,7 +3,7 @@ import { Circle, Cloud, Code, Contrast, Diamond, Droplet, Droplets, Feather, Fil
 import type { Component, InjectionKey } from 'vue'
 
 export type PresetCategory = 'retro' | 'aesthetic' | 'effects'
-export type ShapeValue = 'rect' | 'round-rect' | 'circle' | 'ring' | 'diamond' | 'triangle' | 'hexagon' | 'pentagon' | 'star' | 'cross' | 'x' | 'asterisk' | 'hash' | 'heart' | 'crescent' | 'leaf' | 'pacman' | 'bowtie' | 'arrow' | 'flower' | 'bacon'
+export type ShapeValue = 'rect' | 'round-rect' | 'circle' | 'ring' | 'frame' | 'diamond' | 'triangle' | 'hexagon' | 'pentagon' | 'star' | 'cross' | 'x' | 'asterisk' | 'hash' | 'heart' | 'crescent' | 'drop' | 'pacman' | 'bowtie' | 'arrow' | 'flower' | 'bacon' | 'wave' | 'meander' | 'zigzag' | 'chain'
 
 export type PresetDef = {
   label: string
@@ -195,6 +195,7 @@ export function createPixelateState() {
   const noise = ref(0)
   const colorCount = ref('')
   const shape = ref<ShapeValue>('rect')
+  const aggregate = ref<'mean' | 'median'>('mean')
   const gap = ref(0)
   const scale = ref(1)
   const scanlines = ref(0)
@@ -249,6 +250,7 @@ export function createPixelateState() {
     if (dither.value) n++
     if (greyscale.value) n++
     if (invert.value) n++
+    if (aggregate.value !== 'mean') n++
     if (scale.value !== 1) n++
     if (gap.value > 0) n++
     if (blur.value > 0) n++
@@ -384,6 +386,7 @@ export function createPixelateState() {
     noise.value = 0
     colorCount.value = ''
     shape.value = 'rect'
+    aggregate.value = 'mean'
     gap.value = 0
     scale.value = 1
     scanlines.value = 0
@@ -409,7 +412,7 @@ export function createPixelateState() {
     }, 350)
   }
 
-  watch([pixelSize, pixelAuto, autoPixelDensity, format, palette, dither, greyscale, invert, blur, brightness, contrast, saturation, hue, vibrancy, remap, noise, colorCount, shape, gap, scale, scanlines, seed, background, jitter, sizeVariance, pulse, wave, brightnessSize, alt, offset], () => {
+  watch([pixelSize, pixelAuto, autoPixelDensity, format, palette, dither, greyscale, invert, blur, brightness, contrast, saturation, hue, vibrancy, remap, noise, colorCount, shape, aggregate, gap, scale, scanlines, seed, background, jitter, sizeVariance, pulse, wave, brightnessSize, alt, offset], () => {
     triggerAutoProcess()
   })
 
@@ -541,6 +544,7 @@ export function createPixelateState() {
     if (noise.value > 0) form.append('noise', String(noise.value))
     if (colorCount.value !== '') form.append('colorCount', colorCount.value)
     form.append('shape', shape.value)
+    if (aggregate.value !== 'mean') form.append('aggregate', aggregate.value)
     form.append('gap', String(gap.value))
     form.append('scale', String(scale.value))
     if (scanlines.value > 0) form.append('scanlines', String(scanlines.value))
@@ -665,6 +669,7 @@ export function createPixelateState() {
     noise,
     colorCount,
     shape,
+    aggregate,
     gap,
     scale,
     scanlines,
