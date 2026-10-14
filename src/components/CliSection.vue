@@ -33,8 +33,8 @@
         <p class="text-gray-400 dark:text-zinc-600 select-none mt-3"># Palette</p>
         <p><span class="text-violet-500 dark:text-violet-400">-d, --dither</span> Floyd-Steinberg dithering (requires --palette)</p>
         <p><span class="text-violet-500 dark:text-violet-400">-P, --palette</span> <span class="text-gray-400 dark:text-zinc-500">gb|nes|pico8|dracula|nord|…</span> Snap colors to a palette</p>
-        <p><span class="text-violet-500 dark:text-violet-400">--remap</span> <span class="text-gray-400 dark:text-zinc-500">0–1</span> Pre-shift pixels toward palette colors before pixelating (requires --palette)</p>
-        <p><span class="text-violet-500 dark:text-violet-400">--vibrancy</span> <span class="text-gray-400 dark:text-zinc-500">0–1</span> Bias palette toward saturated colors (requires --palette)</p>
+        <p><span class="text-violet-500 dark:text-violet-400">--remap</span> <span class="text-gray-400 dark:text-zinc-500">0-1</span> Pre-shift pixels toward palette colors before pixelating (requires --palette)</p>
+        <p><span class="text-violet-500 dark:text-violet-400">--vibrancy</span> <span class="text-gray-400 dark:text-zinc-500">0-1</span> Bias palette toward saturated colors (requires --palette)</p>
 
         <p class="text-gray-400 dark:text-zinc-600 select-none mt-3"># Effects</p>
         <p><span class="text-violet-500 dark:text-violet-400">-B, --blur</span> <span class="text-gray-400 dark:text-zinc-500">σ</span> Pre-pixelation blur sigma</p>
@@ -42,11 +42,11 @@
         <p><span class="text-violet-500 dark:text-violet-400">--seed</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Seed for deterministic noise</p>
 
         <p class="text-gray-400 dark:text-zinc-600 select-none mt-3"># Modifiers</p>
-        <p><span class="text-violet-500 dark:text-violet-400">--brightness-size</span> <span class="text-gray-400 dark:text-zinc-500">0–1</span> Scale pixel size by brightness</p>
-        <p><span class="text-violet-500 dark:text-violet-400">--jitter</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Random positional offset per pixel (0–20)</p>
-        <p><span class="text-violet-500 dark:text-violet-400">--pulse</span> <span class="text-gray-400 dark:text-zinc-500">0–1</span> Radial size scaling from image center</p>
-        <p><span class="text-violet-500 dark:text-violet-400">--size-variance</span> <span class="text-gray-400 dark:text-zinc-500">0–1</span> Random size variation per pixel shape</p>
-        <p><span class="text-violet-500 dark:text-violet-400">--wave</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Sine wave position distortion (0–20)</p>
+        <p><span class="text-violet-500 dark:text-violet-400">--brightness-size</span> <span class="text-gray-400 dark:text-zinc-500">0-1</span> Scale pixel size by brightness</p>
+        <p><span class="text-violet-500 dark:text-violet-400">--jitter</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Random positional offset per pixel (0-20)</p>
+        <p><span class="text-violet-500 dark:text-violet-400">--pulse</span> <span class="text-gray-400 dark:text-zinc-500">0-1</span> Radial size scaling from image center</p>
+        <p><span class="text-violet-500 dark:text-violet-400">--size-variance</span> <span class="text-gray-400 dark:text-zinc-500">0-1</span> Random size variation per pixel shape</p>
+        <p><span class="text-violet-500 dark:text-violet-400">--wave</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Sine wave position distortion (0-20)</p>
 
         <p class="text-gray-400 dark:text-zinc-600 select-none mt-3"># Rendering</p>
         <p><span class="text-violet-500 dark:text-violet-400">-G, --gap</span> <span class="text-gray-400 dark:text-zinc-500">n</span> Gap between pixels in px (default: 0)</p>

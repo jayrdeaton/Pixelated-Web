@@ -18,9 +18,9 @@
           </div>
           <ShapePicker v-model="shape" :disabled="isAnsi" class="flex-1 min-w-32" />
           <div class="inline-flex items-stretch bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg overflow-hidden shrink-0" :class="isAnsi ? 'opacity-40' : ''">
-            <button :disabled="isAnsi" :class="alt ? 'bg-violet-500 text-white' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200'" class="px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed" title="Alternate shape orientation on a checkerboard — e.g. alternating up/down triangles, + and × crosses, or 4-direction pacman." @click="!isAnsi && (alt = !alt)">Alt</button>
+            <button :disabled="isAnsi" :class="alt ? 'bg-violet-500 text-white' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200'" class="px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed" title="Alternate shape orientation on a checkerboard: e.g. alternating up/down triangles, + and × crosses, or 4-direction pacman." @click="!isAnsi && (alt = !alt)">Alt</button>
             <div class="w-px bg-gray-200 dark:bg-zinc-700 shrink-0" />
-            <button :disabled="isAnsi" :class="offset ? 'bg-violet-500 text-white' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200'" class="px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed" title="Offset every other row by half a block width — like hexagonal or brick tiling." @click="!isAnsi && (offset = !offset)">Offset</button>
+            <button :disabled="isAnsi" :class="offset ? 'bg-violet-500 text-white' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200'" class="px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed" title="Offset every other row by half a block width: like hexagonal or brick tiling." @click="!isAnsi && (offset = !offset)">Offset</button>
           </div>
         </div>
       </div>

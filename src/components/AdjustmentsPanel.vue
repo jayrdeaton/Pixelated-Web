@@ -94,7 +94,7 @@
       <input id="wave" v-model.lazy.number="wave" type="number" min="0" max="20" step="0.5" :disabled="isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" @keydown.enter.prevent="($event.target as HTMLInputElement).blur()" />
     </div>
     <div :class="isAnsi ? 'opacity-40' : ''">
-      <label for="brightness-size" :class="['flex items-center gap-1 text-sm font-medium mb-1.5', brightnessSize !== 0 ? 'text-violet-500 dark:text-violet-400' : 'text-gray-500 dark:text-zinc-400']">Brightness Size<TooltipInfo text="Scales each pixel's size based on its brightness — brighter pixels appear larger." /></label>
+      <label for="brightness-size" :class="['flex items-center gap-1 text-sm font-medium mb-1.5', brightnessSize !== 0 ? 'text-violet-500 dark:text-violet-400' : 'text-gray-500 dark:text-zinc-400']">Brightness Size<TooltipInfo text="Scales each pixel's size based on its brightness: brighter pixels appear larger." /></label>
       <input id="brightness-size" v-model.lazy.number="brightnessSize" type="number" min="0" max="1" step="0.05" :disabled="isAnsi" class="w-20 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-zinc-300 disabled:opacity-50 focus:outline-none focus:border-violet-500" @keydown.enter.prevent="($event.target as HTMLInputElement).blur()" />
     </div>
 
