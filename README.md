@@ -1,6 +1,6 @@
 # Pixelated Web
 
-The companion website for the [`pixelated`](https://www.npmjs.com/package/pixelated) npm package — pixelate images in the browser with a full set of controls.
+The companion website for the [`pixelated`](https://www.npmjs.com/package/pixelated) npm package: pixelate images in the browser with a full set of controls.
 
 Built with Nuxt 4, Tailwind CSS, and deployed to Vercel.
 
@@ -13,7 +13,7 @@ Built with Nuxt 4, Tailwind CSS, and deployed to Vercel.
 - ANSI output rendered inline; all other formats shown as images
 - Preview history strip with per-result download and settings label
 - Dark mode via system preference or manual toggle
-- Images processed server-side and deleted immediately — nothing is stored
+- Images processed server-side and deleted immediately, so nothing is stored
 
 ## Development
 
@@ -59,4 +59,6 @@ src/
 
 ## License
 
-MIT
+The code is released under the MIT License, see [LICENSE](LICENSE).
+
+The app's name, logo, and icons, and the original artwork in this repository, are not covered by that license and remain all rights reserved. If you fork it, please give your version its own name and look.
